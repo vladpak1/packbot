@@ -29,7 +29,8 @@ class DnsTool implements ToolInterface {
 
     /**
      * Get the result of the dns lookup.
-     * @example array('example.com' => 'wordpress')
+     * @example array(...records)
+     * @see DnsRecord for the structure of the records.
      */
     public function getResult(): array {
         return $this->result;
@@ -42,13 +43,16 @@ class DnsTool implements ToolInterface {
     }
 
     protected function executeDns($domain) {
-        
-        $dns = new Dns($domain);
+        try {
+            $dns     = new Dns($domain);
+            $records = $dns->execute()->getRecords();
+        } catch (DnsException $e) {
+            throw new ToolException(sprintf('Error while executing dns lookup for domain %s. Error: %s', $domain, $e->getMessage()));
+        }
 
-        $dns->execute();
-
-
-        return 'lol';
+        if (count($records) === 0) throw new ToolException(sprintf('No dns records found for domain %s.', $domain));
+        Debug::toConsole($records);
+        return $records;
     }
 
 }

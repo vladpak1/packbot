@@ -21,7 +21,7 @@
         "bopoda/robots-txt-parser": "^2.4",
         "kub-at/php-simple-html-dom-parser": "^1.9",
         "intervention/mimesniffer": "^0.4.2",
-        "remotelyliving/php-dns": "^5.0"
+        "spatie/dns": "^2.5"
     },
     "autoload": {
         "classmap": [

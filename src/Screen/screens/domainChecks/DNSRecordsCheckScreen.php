@@ -81,7 +81,7 @@ final class DNSRecordsCheckScreen extends Screen implements ScreenInterface {
                 $conversation->update();
 
                 return $this->maybeSideExecute(array(
-                    'Этот инструмент позволяет получить все DNS-записи домена.',
+                    'Этот инструмент позволяет получить DNS-записи домена.',
                     '',
                     '<b>Отправьте домен для проверки.</b>',
                     ''
@@ -139,14 +139,14 @@ final class DNSRecordsCheckScreen extends Screen implements ScreenInterface {
         }
 
 
-        // $conversation->stop();
+        $conversation->stop();
 
         $response = $this->tryToSendMessage($this->text->e('Проверка выполняется... Скоро здесь появится отчет.'), false);
         $reportMessageID = $response->getResult()->getMessageId();
 
         try {
             $tool   = new DnsTool($inputDomain);
-            $result = $tool->getResult($inputDomain)[$inputDomain];
+            $records = $tool->getResult($inputDomain)[$inputDomain];
         } catch (ToolException $e) {
             sleep(1);
             return Request::editMessageText(array(
@@ -158,12 +158,68 @@ final class DNSRecordsCheckScreen extends Screen implements ScreenInterface {
                 ));
         }
 
-        $report = new Report();
+        $report          = new Report();
+        $recordsCount    = 0;
+        $preparedRecords = array();
+        
+        foreach ($records as $record) {
+            if ($recordsCount++ > 40) break; //Limit records count
+            /**
+             * @var DnsRecord $record
+             */
+            switch ($record->getType()) {
+                case 'NS':
+                    $preparedRecords['NS'][] = $this->text->concatEOL(
+                        $this->text->sprintf('TTL: %s', $record->getTtl()),
+                        $this->text->sprintf('Значение: %s', $record->getTarget()),
+                    );
+                    break;
+                case 'A':
+                    $preparedRecords['A'][] = trim($this->text->concatEOL(
+                        $this->text->sprintf('Host: %s', $record->getHost()),
+                        $this->text->sprintf('IP: %s', $record->getIP()),
+                        $this->text->sprintf('TTL: %s', $record->getTtl()),
+                        $record->isCloudflare() ? '⛅️ Проксирование Cloudflare' : ''
+                    ));
+                    break;
+                case 'AAAA':
+                    $preparedRecords['AAAA'][] = trim($this->text->concatEOL(
+                        $this->text->sprintf('Host: %s', $record->getHost()),
+                        $this->text->sprintf('IP: %s', $record->getIP()),
+                        $this->text->sprintf('TTL: %s', $record->getTtl()),
+                        $record->isCloudflare() ? '⛅️ Проксирование Cloudflare' : '',
+                    ));
+                    break;
+                case 'TXT':
+                    $preparedRecords['TXT'][] = $this->text->concatEOL(
+                        $this->text->sprintf('Host: %s', $record->getHost()),
+                        $this->text->sprintf('TTL: %s', $record->getTtl()),
+                        $this->text->sprintf('Значение: %s', $record->getText()),
+                    );
+                    break;
+                case 'MX':
+                    $preparedRecords['MX'][] = $this->text->concatEOL(
+                        $this->text->sprintf('Host: %s', $record->getHost()),
+                        $this->text->sprintf('TTL: %s', $record->getTtl()),
+                        $this->text->sprintf('Значение: %s', $record->getTarget()),
+                    );
+                    break;
+                    
+            }
+        }
+        
 
         $report
             ->setTitle('Ваш отчет готов! DNS-записи:')
-            ->addBlock("[$inputDomain]")
-            ->addBlock(htmlspecialchars($result));
+            ->addBlock("[$inputDomain]:");
+
+        foreach ($preparedRecords as $key => $record) {
+            if (count($record) < 0 || empty($record)) continue;
+
+            foreach ($record as $item) {
+                $report->addBlock($this->text->sprintf('%s-запись', $key) . PHP_EOL . $item);
+            }
+        }
 
         Request::editMessageText(array(
             'chat_id' => $this->getChatID(),

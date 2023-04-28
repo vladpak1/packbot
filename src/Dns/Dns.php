@@ -2,8 +2,8 @@
 
 namespace PackBot;
 
-use RemotelyLiving\PHPDNS\Resolvers\CloudFlare;
-use RemotelyLiving\PHPDNS\Resolvers\GoogleDNS;
+use Spatie\Dns\Dns as DnsSpatie;
+use Spatie\Dns\Support\Domain;
 
 class Dns {
 
@@ -11,8 +11,16 @@ class Dns {
 
     protected bool $isExecuted = false;
 
+    protected array $records = array();
+
+    /**
+     * This class is a wrapper for the spatie/dns package.
+     * 
+     * @param string $domain The domain to lookup.
+     * @throws DnsException
+     */
     public function __construct(string $domain) {
-        $this->domain = $domain;
+        $this->domain = Url::getDomain($domain);
     }
 
     public function execute(): self {
@@ -21,13 +29,34 @@ class Dns {
         return $this;
     }
 
-    protected function realExecute() {
-        $this->isExecuted = true;
-
-        $cloudFlareResolver = new CloudFlare();
-
-        $records = $cloudFlareResolver->getRecords($this->domain);
+    /**
+     * @return DnsRecords[] Array of DnsRecords.
+     */
+    public function getRecords(): array {
+        if (!$this->isExecuted) throw new DnsException('Dns lookup not executed.');
+        return $this->records;
     }
 
+    protected function realExecute() {
+        try {
+            $this->isExecuted = true;
 
+            $dns             = new DnsSpatie();
+            $records         = $dns->getRecords(new Domain($this->domain));
+            $recordsPrepared = array();
+
+            foreach ($records as $record) {
+                /**
+                 * @var \Spatie\Dns\Records\Record $record
+                 */
+                $recordArray = $record->toArray();
+
+                $recordsPrepared[] = new DnsRecord($recordArray);
+
+            }
+            $this->records = $recordsPrepared;
+        } catch (\Throwable $e) {
+            throw new DnsException($e->getMessage());
+        }
+    }
 }
