@@ -1,0 +1,27 @@
+{
+    "require": {
+        "longman/telegram-bot": "^0.80.0",
+        "monolog/monolog": "^2.9",
+        "ext-pdo": "*",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-intl": "*",
+        "io-developer/php-whois": "^4.1",
+        "krisseck/detect-cms": "dev-master",
+        "guzzlehttp/guzzle": "^7.5",
+        "spatie/guzzle-redirect-history-middleware": "^1.0",
+        "bopoda/robots-txt-parser": "^2.4",
+        "kub-at/php-simple-html-dom-parser": "^1.9",
+        "intervention/mimesniffer": "^0.4.2",
+        "remotelyliving/php-dns": "^5.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src"
+        ],
+        "files": [
+            "Path.php"
+        ]
+    }
+}
