@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec06462db08e6f1dd645a8cc94de60f8",
+    "content-hash": "40c0302c00cc120a697f5483bc8d5120",
     "packages": [
         {
             "name": "bopoda/robots-txt-parser",
