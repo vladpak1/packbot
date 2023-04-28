@@ -319,51 +319,60 @@ class Time {
     }
 
     private function secondsToHumanReadableRussian(int $seconds): string {
-        $hours = intval($seconds / 3600);
+        $days = intval($seconds / 86400);
+        $remainingHours = intval(($seconds % 86400) / 3600);
         $remainingMinutes = intval(($seconds % 3600) / 60);
         $remainingSeconds = $seconds % 60;
-    
-        $hourWord = $this->declension($hours, array('час', 'часа', 'часов'));
+        
+        $dayWord = $this->declension($days, array('день', 'дня', 'дней'));
+        $hourWord = $this->declension($remainingHours, array('час', 'часа', 'часов'));
         $minuteWord = $this->declension($remainingMinutes, array('минута', 'минуты', 'минут'));
         $secondWord = $this->declension($remainingSeconds, array('секунда', 'секунды', 'секунд'));
-    
-        if ($hours == 0 && $remainingMinutes == 0) {
-            return "{$remainingSeconds} {$secondWord}";
-        } elseif ($hours == 0) {
-            return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
-        } elseif ($remainingMinutes == 0 && $remainingSeconds == 0) {
-            return "{$hours} {$hourWord}";
-        } elseif ($remainingMinutes == 0) {
-            return "{$hours} {$hourWord} {$remainingSeconds} {$secondWord}";
-        } elseif ($remainingSeconds == 0) {
-            return "{$hours} {$hourWord} {$remainingMinutes} {$minuteWord}";
-        } else {
-            return "{$hours} {$hourWord} {$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
+
+
+        if ($days > 1) {
+            if ($days > 3) return "{$days} {$dayWord}";
+            else return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
         }
+        if ($remainingHours > 1) {
+            if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
+            else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
+        }
+        if ($remainingMinutes > 1) {
+            if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
+            else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
+        }
+        
+        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : "только что";
     }
+    
 
     private function secondsToHumanReadableEnglish(int $seconds): string {
-        $hours = intval($seconds / 3600);
+        $days = intval($seconds / 86400);
+        $remainingHours = intval(($seconds % 86400) / 3600);
         $remainingMinutes = intval(($seconds % 3600) / 60);
         $remainingSeconds = $seconds % 60;
-    
-        $hourWord = $this->declension($hours, array('hour', 'hours', 'hours'));
+        
+        $dayWord = $this->declension($days, array('day', 'days', 'days'));
+        $hourWord = $this->declension($remainingHours, array('hour', 'hours', 'hours'));
         $minuteWord = $this->declension($remainingMinutes, array('minute', 'minutes', 'minutes'));
         $secondWord = $this->declension($remainingSeconds, array('second', 'seconds', 'seconds'));
-    
-        if ($hours == 0 && $remainingMinutes == 0) {
-            return "{$remainingSeconds} {$secondWord}";
-        } elseif ($hours == 0) {
-            return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
-        } elseif ($remainingMinutes == 0 && $remainingSeconds == 0) {
-            return "{$hours} {$hourWord}";
-        } elseif ($remainingMinutes == 0) {
-            return "{$hours} {$hourWord} {$remainingSeconds} {$secondWord}";
-        } elseif ($remainingSeconds == 0) {
-            return "{$hours} {$hourWord} {$remainingMinutes} {$minuteWord}";
-        } else {
-            return "{$hours} {$hourWord} {$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
+
+
+        if ($days > 1) {
+            if ($days > 3) return "{$days} {$dayWord}";
+            else return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
         }
+        if ($remainingHours > 1) {
+            if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
+            else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
+        }
+        if ($remainingMinutes > 1) {
+            if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
+            else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
+        }
+        
+        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : "только что";
     }
 
     /**
