@@ -1,4 +1,11 @@
 {
+    "name": "vladpak1/packbot",
+    "description": "Telegram bot for checking and monitoring sites.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [{
+        "name": "Vlad Pak"
+    }],
     "require": {
         "longman/telegram-bot": "^0.80.0",
         "monolog/monolog": "^2.9",
