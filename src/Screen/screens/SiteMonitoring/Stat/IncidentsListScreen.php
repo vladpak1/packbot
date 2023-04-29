@@ -117,8 +117,14 @@ final class IncidentsListScreen extends Screen {
         $averageIncidentsTime   = $time->secondsToHumanReadable($statistics->getAverageIncidentsTime());
         $longestIncidentTime    = $time->secondsToHumanReadable($statistics->getLongestIncidentTime());
         $totalIncidentsTime     = $time->secondsToHumanReadable($statistics->getIncidentsDuration());
-        $timeSinceLastIncident  = $statistics->getIncidentsCount() > 0 ? $time->secondsToHumanReadable($statistics->getTimeSinceLastIncident()) . ' ' . $this->text->e('назад') : $this->text->e('никогда');
 
+        if ($statistics->getIncidentsCount() == 0) {
+            $timeSinceLastIncident = $this->text->e('никогда');
+        } else if ($statistics->getTimeSinceLastIncident() === 0) {
+            $timeSinceLastIncident = $this->text->e('сейчас');
+        } else {
+            $timeSinceLastIncident = $time->secondsToHumanReadable($statistics->getTimeSinceLastIncident()) . ' ' . $this->text->e('назад');
+        }
 
         return array(
             'incidentsCount'        => $incidentsCount,
