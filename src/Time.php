@@ -372,7 +372,7 @@ class Time {
             else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
         }
         
-        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : "только что";
+        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : "just now";
     }
 
     /**
