@@ -201,6 +201,13 @@ final class UrlTrimmerScreen extends Screen implements ScreenInterface {
                 'reply_markup' => $this->afterKeyboard,
                 'disable_web_page_preview' => true,
             ));
+        } else if (count($resultArray) == 0) {
+            return Request::sendMessage(array(
+                'chat_id'      => $this->isSideExecute() ? $this->command->getCallbackQuery()->getFrom()->getId() : $this->command->getMessage()->getChat()->getId(),
+                'text'         => $this->text->e('В списке не осталось доменов.'),
+                'reply_markup' => $this->afterKeyboard,
+                'disable_web_page_preview' => true,
+            ));
         } else {
             return Request::sendMessage(array(
                 'chat_id'      => $this->isSideExecute() ? $this->command->getCallbackQuery()->getFrom()->getId() : $this->command->getMessage()->getChat()->getId(),
