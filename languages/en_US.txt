@@ -206,3 +206,6 @@ DNS-записи = DNS records
 История очищена! Используйте /cat, чтобы получить кота. 🐱 = History cleared! Use /cat to get a cat. 🐱
 Еще - /cat 🐱 = More - /cat 🐱
 В списке не осталось доменов. = There are no more domains in the list.
+Некорректный URL. Проверьте правильность ввода и повторите попытку. = Invalid URL. Check the correctness of the input and try again.
+Получение файла sitemap.xml из robots.txt... = Getting sitemap.xml file from robots.txt...
+Получение файла robots.txt... = Getting robots.txt file...

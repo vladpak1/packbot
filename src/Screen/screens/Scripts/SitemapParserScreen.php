@@ -134,8 +134,8 @@ final class SitemapParserScreen extends Screen implements ScreenInterface {
             return $this->tryToSendMessage($this->text->e('Проверка нескольких доменов одновременно не поддерживается этим инструментом. Уберите лишние домены и попробуйте еще раз.'), false);
         }
 
-        if (empty($inputDomain) || !Url::isValid($inputDomain) || !str_contains($inputDomain, '.xml')) {
-            return $this->tryToSendMessage($this->text->e('Некорректный сайтмап. Сайтмап должен быть доступен и иметь расширение .xml.'), false);
+        if (empty($inputDomain) || !Url::isValid($inputDomain)) {
+            return $this->tryToSendMessage($this->text->e('Некорректный URL. Проверьте правильность ввода и повторите попытку.'), false);
         }
 
         $conversation->stop();

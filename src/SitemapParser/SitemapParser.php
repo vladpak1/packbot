@@ -3,13 +3,14 @@
 namespace PackBot;
 
 use Longman\TelegramBot\Request;
+use RobotsTxtParser\RobotsTxtParser;
 
 class SitemapParser {
 
     /**
      * Link to sitemap.xml file.
      */
-    protected string $sitemap;
+    protected array $sitemaps;
 
     protected bool $isExecuted = false;
 
@@ -41,7 +42,7 @@ class SitemapParser {
      * @throws SitemapParserException
      */
     public function __construct(string $sitemap) {
-        $this->sitemap  = $sitemap;
+        $this->sitemaps = array($sitemap);
         $this->text     = new Text();
         $this->time     = new Time();
     }
@@ -55,6 +56,18 @@ class SitemapParser {
         $this->isExecuted = true;
         $this->startTime  = microtime(true);
         $this->updateMessage('Инициализация...');
+
+
+        /**
+         * If this is not a direct link to sitemap.xml file, then we need to get sitemap.xml file.
+         */
+        if (!$this->endsWithXml($this->sitemaps[0])) {
+            $this->updateMessage('Получение файла sitemap.xml из robots.txt...');
+
+            $this->sitemaps = $this->getSitemapXmlFileAddress($this->sitemaps[0]);
+        }
+
+
         $this->startIteratingThroughSitemaps();
 
         return $this;
@@ -96,9 +109,48 @@ class SitemapParser {
         return $this;
     }
 
+    protected function endsWithXml(string $string): bool {
+        $extension = '.xml';
+        $extLength = strlen($extension);
+
+        if (strlen($string) < $extLength) return false;
+
+        return substr($string, -$extLength) === $extension;
+    }
+
+    protected function getSitemapXmlFileAddress(string $url): array {
+        try {
+            $this->updateMessage('Получение файла robots.txt...');
+
+            $curl = new Curl(Url::getDomain($url) . '/robots.txt');
+
+            $response = $curl
+                            ->setTimeout(20)
+                            ->execute()
+                            ->getResponse();
+            
+            if (!$response->isOK()) throw new SitemapParserException('Failed to get robots.txt file.');
+
+            $robotsTxt = $response->getBody();
+
+            if (strlen($robotsTxt) == 0) throw new SitemapParserException('Robots.txt file is empty.');
+
+            $parser = new RobotsTxtParser($robotsTxt);
+
+            $sitemaps = $parser->getSitemaps();
+
+            if (count($sitemaps) == 0) throw new SitemapParserException('Robots.txt file does not contain sitemap.xml file address.');
+            
+            return $sitemaps;
+            
+        } catch (\Throwable $e) {
+            throw new SitemapParserException('Failed to get sitemap.xml file address from robots.txt file: ' . $e->getMessage());
+        }
+    }
+
     protected function updateMessage(string $currentAction) {
         if ($this->telegramMessageData === false) return;
-        sleep(2);
+
         $message = $this->text->concatDoubleEOL(
             '<b>Выполняется парсинг... Это может занять очень много времени.</b>',
             $this->text->sprintf('❗️ Действие: %s', $this->text->e($currentAction)),
@@ -115,6 +167,8 @@ class SitemapParser {
             'text' => $message,
             'parse_mode' => 'HTML',
         ));
+
+        sleep(2);
     }
 
     protected function getSitemapContent(string $sitemap) {
@@ -137,7 +191,10 @@ class SitemapParser {
     }
 
     protected function startIteratingThroughSitemaps() {
-        $this->iterateSitemap($this->sitemap);
+        foreach ($this->sitemaps as $sitemap) {
+            $this->iterateSitemap($sitemap);
+        }
+
     }
 
     protected function iterateSitemap(string $sitemapLink) {
