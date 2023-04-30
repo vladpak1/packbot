@@ -274,16 +274,25 @@ class Alert {
 
     protected function getAlertKeyboard(): InlineKeyboard {
         $text = $this->text;
-        $keyboard = new InlineKeyboard(array(
+        $site = new Site($this->getSiteID());
+        $keyboard = new InlineKeyboard(
             array(
-                'text'          => '❌ ' . $text->e('Перестать отслеживать'),
-                'callback_data' => 'Site_deleteSite_' . $this->getSiteID(),
+                array(
+                    'text'          => '❌ ' . $text->e('Перестать отслеживать'),
+                    'callback_data' => 'Site_deleteSite_' . $this->getSiteID(),
+                ),
+                array(
+                    'text'          => '🏠 ' . $text->e('Главное меню'),
+                    'callback_data' => 'DomainChecks_backToMainMenu',
+                )
             ),
             array(
-                'text'          => '🏠 ' . $text->e('Главное меню'),
-                'callback_data' => 'DomainChecks_backToMainMenu',
+                array(
+                    'text'          => '📊 ' . $text->e('Статистика'),
+                    'callback_data' => '{NEW}IncidentsList_incidentsList_' . $site->getID(),
+                ),
             )
-        ));
+        );
 
         return $keyboard;
     }

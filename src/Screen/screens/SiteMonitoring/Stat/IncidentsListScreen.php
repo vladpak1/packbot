@@ -4,6 +4,7 @@ namespace PackBot;
 use Longman\TelegramBot\Commands\Command;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Request;
 
 final class IncidentsListScreen extends Screen {
 
@@ -13,6 +14,8 @@ final class IncidentsListScreen extends Screen {
     protected Text $text;
 
     protected string $screenName = 'IncidentsList';
+
+    protected bool $blockSideExecute = false;
 
     public function __construct(Command $command) {
         parent::__construct($command);
@@ -30,6 +33,11 @@ final class IncidentsListScreen extends Screen {
                 error_log('An attempt to execute undefined callback for screen ' . $this->screenName . ': ' . $callback);
                 return $this->sendSomethingWrong();
         }
+    }
+
+    public function blockSideExecute() {
+        $this->blockSideExecute = true;
+        return $this;
     }
 
     public function executeCallbackWithAdditionalData(string $callback, string $additionalData, string|false $listAction = false, int|false $currentScreen = false): ServerResponse {
@@ -100,6 +108,16 @@ final class IncidentsListScreen extends Screen {
             $listAction == 'nextPage' ? $keyboard->nextPage() : $keyboard->previousPage();
         }
 
+        if ($this->blockSideExecute) {
+            Request::sendMessage(array(
+                'chat_id' => $this->command->getCallbackQuery()->getMessage()->getChat()->getId(),
+                'text' => implode(PHP_EOL, $message),
+                'reply_markup' => $keyboard->getKeyboard(),
+                'parse_mode' => 'HTML',
+                'disable_web_page_preview' => 'true',
+            ));
+            return $this->command->getCallbackQuery()->answer();
+        }
 
         return $this->maybeSideExecute(implode(PHP_EOL, $message), $keyboard->getKeyboard(), true, array(
             'disable_web_page_preview' => 'true',

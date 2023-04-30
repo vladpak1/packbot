@@ -22,6 +22,12 @@ class CallbackExecutor {
         $callback    = $this->command->getCallbackQuery()->getData();
         $callback    = explode('_', $callback);
         $callback[0] = $callback[0] . 'Screen';
+        $newMessage = false;
+
+        if (str_contains($callback[0], '{NEW}')) {
+            $newMessage = true;
+            $callback[0] = str_replace('{NEW}', '', $callback[0]);
+        }
 
         $callbackForCall = 'PackBot\\' . $callback[0];
 
@@ -30,6 +36,10 @@ class CallbackExecutor {
         }
 
         $screen = new $callbackForCall($this->command);
+
+        if ($newMessage) {
+            $screen->blockSideExecute();
+        }
 
         if (count($callback) == 2) {
             return $screen->executeCallback($callback[1]);
@@ -53,6 +63,12 @@ class CallbackExecutor {
     public function forceCallback(string $callback): ServerResponse {
         $callback = explode('_', $callback);
         $callback[0] = $callback[0] . 'Screen';
+        $newMessage = false;
+
+        if (str_contains($callback[0], '{NEW}')) {
+            $newMessage = true;
+            $callback[0] = str_replace('{NEW}', '', $callback[0]);
+        }
 
         $callbackForCall = 'PackBot\\' . $callback[0];
 
@@ -61,6 +77,10 @@ class CallbackExecutor {
         }
 
         $screen = new $callbackForCall($this->command);
+
+        if ($newMessage) {
+            $screen->blockSideExecute();
+        }
 
         if (count($callback) == 2) {
             return $screen->executeCallback($callback[1]);
