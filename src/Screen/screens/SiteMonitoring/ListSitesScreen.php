@@ -84,7 +84,7 @@ final class ListSitesScreen extends Screen {
             /**
              * @var Site $site
              */
-            $siteStringTemplate = $site->getRawState() !== 1 ? '❗️%s [%s, %s]' : '%s [%s, %s]';
+            $siteStringTemplate = $site->getRawState() === 1 || $site->getRawState() === NULL ? '%s [%s, %s]' : '❗️%s [%s, %s]';
             $this->keyboard->addRow(array(
                 'text'          => $this->text->sprintf($siteStringTemplate, Format::prepDisplay($site->getURL(), 25), $this->text->e(mb_strtolower($site->getState())), $site->getLastCheckTime()),
                 'callback_data' => 'Site_siteScreen_'. $site->getID(),
