@@ -41,10 +41,8 @@ try {
 
     // Logging (Error, Debug and Raw Updates)
     // https://github.com/php-telegram-bot/core/blob/master/doc/01-utils.md#logging
-    
-    // (this example requires Monolog: composer require monolog/monolog)
 
-    if (true) {
+    if (Environment::var('logging')) {
         //delete all logs every request
 
         try {
