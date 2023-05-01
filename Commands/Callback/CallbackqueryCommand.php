@@ -10,7 +10,9 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Request;
 use PackBot\CallbackExecutor;
+use PackBot\Text;
 use PackBot\UserSettings;
 
 class CallbackqueryCommand extends SystemCommand
@@ -44,8 +46,18 @@ class CallbackqueryCommand extends SystemCommand
          */
         UserSettings::setUserID($this->getCallbackQuery()->getFrom()->getId());
 
-        $callbackExecutor = new CallbackExecutor($this);
+        try {
 
-        return $callbackExecutor->execute();
+            $callbackExecutor = new CallbackExecutor($this);
+            return $callbackExecutor->execute();
+
+        } catch (\Throwable $th) {
+            $text = new Text();
+            error_log($th->getMessage() . PHP_EOL . $th->getTraceAsString());
+            return Request::sendMessage([
+                'chat_id' => $this->getCallbackQuery()->getMessage()->getChat()->getId(),
+                'text' => $text->e('Что-то пошло не так. Попробуйте еще раз или используйте /reload, чтобы перезагрузить бота.'),
+            ]);
+        }
     }
 }

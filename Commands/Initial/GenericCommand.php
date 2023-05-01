@@ -36,6 +36,8 @@ class GenericCommand extends SystemCommand
 
         $text = new Text();
 
+        $this->replyToChat($this->getMessage()->getText(false));
+
 
         $genericMessage = $text->concatEOL(
             'Команда не найдена.',
