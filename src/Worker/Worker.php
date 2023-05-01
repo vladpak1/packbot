@@ -35,6 +35,11 @@ class Worker {
         }
     }
 
+    public function doDailyJob() {
+        $cleaner = new Cleaner();
+        $cleaner->executeAll();
+    }
+
 
 
     /**

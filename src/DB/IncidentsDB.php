@@ -165,6 +165,26 @@ class IncidentsDB extends PackDB {
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    /**
+     * Remove all incidents related to the site.
+     */
+    public static function removeIncidents(int $siteID): void {
+        $sql = "DELETE FROM incidents WHERE site_id = :site_id";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute(['site_id' => $siteID]);
+    }
+
+    /**
+     * Removes all incidents older than 30 days.
+     * Returns the number of removed incidents.
+     */
+    public static function removeOldIncidents(): int {
+        $sql = "DELETE FROM incidents WHERE start_time < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY)";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
     protected static function getLastIncidentID(): int {
         $sql = "SELECT id FROM incidents ORDER BY id DESC LIMIT 1";
         $stmt = self::getDB()->prepare($sql);

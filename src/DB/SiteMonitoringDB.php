@@ -311,6 +311,39 @@ class SiteMonitoringDB extends PackDB {
         return $stmt->fetch(PDO::FETCH_COLUMN);
     }
 
+    /**
+     * Removes sites from database that does not have any owners assigned.
+     * Return the number of removed sites.
+     */
+    public static function removeSitesWithoutOwners(): int {
+        $sql = "SELECT * FROM site_monitoring";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        $sites = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $removed = 0;
+        foreach ($sites as $site) {
+            if ($site['owners'] == '') {
+                self::removeSite($site['id']);
+                $removed++;
+            }
+        }
+        return $removed;
+    }
+     
+    /**
+     * Removes the site from database and all incidents related to it.
+     */
+    public static function removeSite(int $siteID): bool {
+        $sql = "DELETE FROM site_monitoring WHERE id = :id";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute(['id' => $siteID]);
+
+        //Remove all incidents related to this site
+        IncidentsDB::removeIncidents($siteID);
+
+        return true;
+    }
+
 
 
 }

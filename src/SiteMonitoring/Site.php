@@ -2,6 +2,7 @@
 
 namespace PackBot;
 
+use Longman\TelegramBot\Request;
 
 class Site implements \JsonSerializable {
 
@@ -117,5 +118,28 @@ class Site implements \JsonSerializable {
      */
     public function getLastCheckTime(): string {
         return $this->getRelativeTime($this->getLastCheck());
+    }
+
+    /**
+     * Sends message to owners.
+     * 
+     * @param string $message Message to send. Message will not be translated.
+     * @return int Number of sent messages.
+     */
+    public function sendMessageToOwners(string $message): int {
+        $owners = SiteMonitoringDB::getSiteOwners($this->getID());
+        $sent = 0;
+        foreach ($owners as $userID) {
+            $success = Request::sendMessage([
+                'chat_id' => PackDB::getChatIDByUserID($userID),
+                'text'    => $message,
+                'disable_web_page_preview' => true,
+            ]);
+            if ($success) {
+                $sent++;
+            }
+        }
+
+        return $sent;
     }
 }
