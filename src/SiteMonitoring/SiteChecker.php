@@ -60,7 +60,7 @@ class SiteChecker {
         $this->sites = $objects;
     }
 
-    protected function checkSite(Site $site) {
+    protected function checkSite(Site $site, $recheck = true) {
         $url = $site->getURL();
 
         /**
@@ -75,15 +75,36 @@ class SiteChecker {
         /**
          * Let's determine if we need to check the site.
          */
-         if (!$this->isCheckRequired($site)) return;
+         if (!$this->isCheckRequired($site) && $recheck) return;
+
+        /**
+         * We slightly increase the true curl time limit to fix not the wrong code (0),
+         * but the site response time.
+         * If recheck is true, there is no need to increase the timeout.
+         */
+        $timeoutMagnifier = $recheck ? 0 : 15;
     
         try {
             $timeout      = $this->settings['downStateConditions']['timeout'];
-            $response     = $curl->setTimeout($timeout + 30)->setFollowLocation(false)->execute()->getResponse();
+            $response     = $curl->setTimeout($timeout + $timeoutMagnifier)->setFollowLocation(false)->execute()->getResponse();
             $responseCode = $response->getCode();
             $responseTime = $response->getTotalTime() / 1000;
+
+
+            /**
+             * Due to various network side effects,
+             * we need to implement additional validation if
+             * the site has been declared down.
+             */
+            if ($recheck && ($responseCode !== 200 || $responseTime > $timeout)) {
+                echo "Site is declared down. Rechecking after 5 seconds..." . PHP_EOL;
+                sleep(5);
+                $this->checkSite($site, false);
+                return;
+            }
     
             if ($responseCode !== 200 || $responseTime > $timeout) {
+                echo "Site is still down after rechecking." . PHP_EOL;
                 echo "Set down state for site: $url" . PHP_EOL;
                 echo "Response code: $responseCode" . PHP_EOL;
                 echo "Response time: $responseTime" . PHP_EOL;
