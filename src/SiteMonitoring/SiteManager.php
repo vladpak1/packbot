@@ -35,6 +35,13 @@ class SiteManager {
         }
 
         /**
+         * After the release, it became known that for some reason, in some situations,
+         * an address with a port can be returned.
+         * Throw an exception when such situations are encountered.
+         */
+        if (Url::hasPort($effectiveUrl)) throw new SiteMonitoringException($this->text->sprintf('Эффективный адрес (%s) сайта содержит порт, что недопустимо для этого бота. Попробуйте еще раз.', $effectiveUrl));
+
+        /**
          * Check if user has exceeded the limit of sites
          */
         if (SiteMonitoringDB::getUsersSitesCount($this->userID) >= Environment::var('monitoring_settings')['maxSitesPerUser']) throw new SiteMonitoringException($this->text->sprintf('Вы можете добавить не более %d сайтов в мониторинг.', Environment::var('monitoring_settings')['maxSitesPerUser']));

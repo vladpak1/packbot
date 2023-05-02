@@ -57,7 +57,15 @@ class Url {
         } else {
             throw new CurlException('Curl error: ' . $response->getCode());
         }
+    }
 
+    /**
+     * Check if there's a port represented in the url.
+     */
+    public static function hasPort(string $url): bool {
+        $url    = self::maybeAddProtocol($url);
+        $parsed = parse_url($url);
+        return isset($parsed['port']);
     }
 
     /**
