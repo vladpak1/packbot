@@ -127,7 +127,11 @@ class Alert {
                 break;
             case 'workingAgain':
                 $incidentID = (new Site($this->getSiteID()))->getIncidentID();
-                if (empty($incidentID)) break;
+                if (empty($incidentID)) {
+                    error_log(sprintf('No incident ID for site %s', $this->getSiteID()));
+                    echo 'No incident ID!' . PHP_EOL;
+                    return;
+                }
 
                 $incident = new Incident($incidentID);
                 $incident->resolve();
@@ -174,15 +178,14 @@ class Alert {
         $report = new Report();
         $reason = $this->getReason();
 
-
-        $report->setTitle($text->sprintf('Сайт %s не работает! Проверьте его.', $site->getURL()));
-
         switch($reason['type']) {
             case 'wrongCode':
+                $report->setTitle($text->sprintf('Сайт %s не работает! Проверьте его.', $site->getURL()));
                 $report->addBlock($text->sprintf('Сайт ответил кодом %s.', $reason['code']));
                 $report->addBlock('▶️ ' . HttpDescription::getCodeDescription($reason['code'], $text->getCurrentLanguage()));
                 break;
             case 'timeout':
+                $report->setTitle($text->sprintf('Сайт %s работает медленно! Проверьте его.', $site->getURL()));
                 $report->addBlock($text->sprintf('Ответа сайта пришлось ждать %s секунд.', $reason['timeout']));
                 break;
         }
