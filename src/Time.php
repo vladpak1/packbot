@@ -318,6 +318,13 @@ class Time {
         }
     }
 
+    /**
+     * Return current timestamp in console format.
+     */
+    public static function consoleTimestamp() {
+        return '[' . date('Y-m-d H:i:s') . ']';
+    }
+
     private function secondsToHumanReadableRussian(int $seconds): string {
         $days = intval($seconds / 86400);
         $remainingHours = intval(($seconds % 86400) / 3600);
@@ -330,15 +337,15 @@ class Time {
         $secondWord = $this->declension($remainingSeconds, array('секунда', 'секунды', 'секунд'));
 
 
-        if ($days > 1) {
+        if ($days >= 1) {
             if ($days > 3) return "{$days} {$dayWord}";
             else return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
         }
-        if ($remainingHours > 1) {
+        if ($remainingHours >= 1) {
             if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
             else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
         }
-        if ($remainingMinutes > 1) {
+        if ($remainingMinutes >= 1) {
             if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
             else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
         }
@@ -359,15 +366,15 @@ class Time {
         $secondWord = $this->declension($remainingSeconds, array('second', 'seconds', 'seconds'));
 
 
-        if ($days > 1) {
+        if ($days >= 1) {
             if ($days > 3) return "{$days} {$dayWord}";
             else return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
         }
-        if ($remainingHours > 1) {
+        if ($remainingHours >= 1) {
             if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
             else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
         }
-        if ($remainingMinutes > 1) {
+        if ($remainingMinutes >= 1) {
             if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
             else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
         }
