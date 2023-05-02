@@ -212,3 +212,5 @@ DNS-записи = DNS records
 Получение файла robots.txt... = Getting robots.txt file...
 Сайт %s был удален. Его данные какое-то время будут оставаться в боте, так что если вы ошиблись, просто добавьте сайт снова. = The site %s has been deleted. Its data will remain in the bot for some time, so if you made a mistake, just add the site again.
 сейчас = now
+Что-то пошло не так. Попробуйте еще раз или используйте /reload, чтобы перезагрузить бота. = Something went wrong. Try again or use /reload to reload the bot.
+Сайт %s работает медленно! Проверьте его. = The site %s is working slowly! Check it out.
