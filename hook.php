@@ -18,7 +18,6 @@ try {
     $db_name      = Environment::var('db_name');
 } catch (PackBot\EnvironmentException $e) {
     error_log($e->getMessage());
-    echo $e->getMessage();
 }
 
 try {
@@ -53,22 +52,22 @@ try {
         } catch (Throwable) {
 
         }
+
+        \Longman\TelegramBot\TelegramLog::$always_log_request_and_response = true;
+
+        Longman\TelegramBot\TelegramLog::initialize(
+        new Monolog\Logger('telegram_bot', [
+            (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-debug.log', Monolog\Logger::DEBUG))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
+            (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-error.log', Monolog\Logger::ERROR))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
+        ]),
+        new Monolog\Logger('telegram_bot_updates', [
+            (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-update.log', Monolog\Logger::INFO))->setFormatter(new Monolog\Formatter\LineFormatter('%message%' . PHP_EOL)),
+        ])
+        );
     }
 
     $telegram->enableAdmins(
         Environment::var('admins'),
-    );
-
-    \Longman\TelegramBot\TelegramLog::$always_log_request_and_response = true;
-
-    Longman\TelegramBot\TelegramLog::initialize(
-       new Monolog\Logger('telegram_bot', [
-           (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-debug.log', Monolog\Logger::DEBUG))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
-           (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-error.log', Monolog\Logger::ERROR))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
-       ]),
-       new Monolog\Logger('telegram_bot_updates', [
-           (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-update.log', Monolog\Logger::INFO))->setFormatter(new Monolog\Formatter\LineFormatter('%message%' . PHP_EOL)),
-       ])
     );
 
     /**
@@ -87,7 +86,5 @@ try {
     $telegram->handle();
 } catch (TelegramException $e) {
     // Silence is golden!
-    // log telegram errors
-    echo $e->getMessage();
     error_log($e->getMessage());
 }
