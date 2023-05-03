@@ -68,7 +68,7 @@ return array(
         ),
         'PageSpeedTool' => array(
             'enabled' => true,
-            'apiKey' => 'AIzaSyCY5-sLkiIXHKXG_NJwzk2Lj46uVj6vxb0',
+            'apiKey' => 'api_key', //leave it empty to use PageSpeed without api key (less requests per day)
         ),
         'RedirectTraceTool' => array(
             'enabled' => true,

@@ -10,7 +10,7 @@ class PageSpeed {
 
     protected string $baseApiUrl = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
 
-    protected string $apiKey;
+    protected ?string $apiKey;
 
     protected Text $text;
 
@@ -24,8 +24,11 @@ class PageSpeed {
         $this->url = $url;
         $apiKey = Environment::var('tools_settings')['PageSpeedTool']['apiKey'];
 
-        if (empty($apiKey)) throw new PageSpeedException('API key for PageSpeed is not set.');
-        $this->apiKey = $apiKey;
+        if (empty($apiKey) || $apiKey == 'api_key') {
+            $this->apiKey = false;
+        } else {
+            $this->apiKey = $apiKey;
+        }
 
         $this->text = new Text();
     }
@@ -68,11 +71,12 @@ class PageSpeed {
     }
 
     protected function generateApiUrl() {
-        $locale = $this->text->getCurrentLanguage();
-        $key = $this->apiKey;
-        $url = $this->prepareUrlForPageSpeed($this->url);
+        $locale   = $this->text->getCurrentLanguage();
+        $key      = $this->apiKey;
+        $url      = $this->prepareUrlForPageSpeed($this->url);
         $strategy = $this->strategy;
 
+        if (!$key) return "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=$url&locale=$locale&strategy=$strategy";
         return "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=$url&key=$key&locale=$locale&strategy=$strategy";
 
     }
