@@ -2,6 +2,8 @@
 
 PackBot is a powerful and easy-to-use Telegram bot designed for website monitoring, domain and SEO analysis. Developed in PHP and leveraging the [php-telegram-bot](https://github.com/php-telegram-bot/core) library, PackBot aims to provide a range of essential features to help you keep track of your website's performance.
 
+You can test it here: https://t.me/packhelperbot
+
 ## Getting Started
 
 ### Prerequisites
