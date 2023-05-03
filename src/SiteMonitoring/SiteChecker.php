@@ -60,14 +60,14 @@ class SiteChecker {
         $this->sites = $objects;
     }
 
-    protected function checkSite(Site $site, $recheck = true) {
+    protected function checkSite(Site $site, $recheck = true, $forceDisableNoCache = false) {
         $url = $site->getURL();
 
         /**
          * If "noCacheUrl" is set to true, we will add a random string to the end of the URL.
          * This will prevent the site from being cached.
          */
-        if ($this->settings['noCacheUrl']) $url .= '?_' . uniqid();
+        if ($this->settings['noCacheUrl'] && !$forceDisableNoCache) $url .= '?_' . uniqid();
 
         $curl = new Curl($url);
         echo "Checking site $url" . PHP_EOL;
@@ -99,6 +99,18 @@ class SiteChecker {
             if ($recheck && ($responseCode !== 200 || $responseTime > $timeout)) {
                 echo "Site is declared down. Rechecking after 5 seconds..." . PHP_EOL;
                 sleep(5);
+
+                /**
+                 * Some sites don't support URL parameters,
+                 * so we'll disable them if we get code that looks like this.
+                 */
+                if ($responseCode == 301 || $responseCode == 302 || $responseCode == 400) {
+                    echo "It seems that the site does not support URL parameters." . PHP_EOL;
+                    $this->checkSite($site, false, true);
+                    return;
+                }
+
+
                 $this->checkSite($site, false);
                 return;
             }
