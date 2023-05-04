@@ -30,5 +30,8 @@
         "files": [
             "Path.php"
         ]
+    },
+    "require-dev": {
+        "dominikb/composer-license-checker": "^2.4"
     }
 }
