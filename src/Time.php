@@ -343,10 +343,12 @@ class Time {
         }
         if ($remainingHours >= 1) {
             if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
+            else if ($remainingMinutes == 0) return "{$remainingHours} {$hourWord}";
             else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
         }
         if ($remainingMinutes >= 1) {
             if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
+            else if ($remainingSeconds == 0) return "{$remainingMinutes} {$minuteWord}";
             else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
         }
         
@@ -372,10 +374,12 @@ class Time {
         }
         if ($remainingHours >= 1) {
             if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
+            else if ($remainingMinutes == 0) return "{$remainingHours} {$hourWord}";
             else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
         }
         if ($remainingMinutes >= 1) {
             if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
+            else if ($remainingSeconds == 0) return "{$remainingMinutes} {$minuteWord}";
             else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
         }
         
