@@ -35,9 +35,13 @@ abstract class TestWithEnvCase extends TestCase {
             'database' => Environment::var('db_name'),
         );
 
-        TestHelpers::emptyDB($this->credentials);
+        try {
+            PackDB::connect();
+        } catch (\Throwable $e) {
+            $this->markTestSkipped('This test requires a database connection. Error: ' . $e->getMessage());
+        }
 
-        PackDB::connect();
+        TestHelpers::emptyDB($this->credentials);
 
         $telegram = new Telegram($this->dummyApiKey, 'testbot');
         $telegram->enableMySql($this->credentials);
