@@ -43,9 +43,9 @@ class IncidentsDB extends PackDB {
      * Get incident by ID.
      * 
      * @param int $id ID of the incident.
-     * @return array Incident data.
+     * @return array|false Incident data or false if incident not found.
      */
-    public static function getIncident(int $id): array {
+    public static function getIncident(int $id): array|false {
         $sql = "SELECT * FROM incidents WHERE id = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute(['id' => $id]);
