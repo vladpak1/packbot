@@ -6,7 +6,6 @@ class CloudflareChecker {
 
     protected array $rangesLinks = array(
         'https://www.cloudflare.com/ips-v4',
-        'https://www.cloudflare.com/ips-v6',
     );
 
     protected array $ranges = array();
@@ -15,6 +14,7 @@ class CloudflareChecker {
      * This class is used for determining if the IP-address is part of Cloudflare network.
      * 
      * Cloudflare's known addresses are used to determine if the IP-address is part of Cloudflare network.
+     * Please note that ipv6 is not supported.
      * 
      * @throws CloudflareCheckerException
      */
@@ -58,8 +58,6 @@ class CloudflareChecker {
             }
 
             $this->ranges = array_merge($this->ranges, explode("\n", $response->getBody()));
-
-            sleep(2); //in case of rate limit
         }
     }
 
@@ -75,21 +73,9 @@ class CloudflareChecker {
                 $mask = -1 << (32 - $mask);
                 return ($ip & $mask) === $subnet;
             case 'ipv6':
-                $ip = inet_pton($ip);
-                $subnet = inet_pton($subnet);
-                $mask = $this->ipv6Mask($mask);
-                return ($ip & $mask) === $subnet;
+                return false;
             default:
                 return false;
         }
-    }
-
-    private function ipv6Mask(int $cidr): string {
-        $bin = '';
-        for ($i = 1; $i <= 128; $i++) {
-            $bin .= $i <= $cidr ? '1' : '0';
-        }
-
-        return inet_pton(implode(':', str_split($bin, 16)));
     }
 }
