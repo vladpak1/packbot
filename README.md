@@ -45,3 +45,13 @@ To enable website monitoring, configure your server to execute the `cronjob.php`
   - Format URL lists, with file support, and parse sitemaps for convenient data extraction.
 
 With its extensive feature set, PackBot serves as an invaluable tool for monitoring and analyzing your website's performance, allowing you to make data-driven decisions for improvement.
+
+## Testing
+
+PackBot uses [PHPUnit](https://github.com/sebastianbergmann/phpunit) for testing.
+Functional tests require connection to the test database, so it's necessary to create and configure it in the `tests/config.test.php` file.
+Enter to start tests:
+```bash
+vendor/bin/phpunit
+```
+
