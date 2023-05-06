@@ -7,6 +7,7 @@ class Url {
      * Note that this method considers a valid url even if it doesn't provide a protocol.
      */
     public static function isValid(string $url): bool {
+        $url = trim($url);
         $url = self::maybeAddProtocol($url);
 
         if (str_contains($url, ' ') || !str_contains($url, '.')) {
