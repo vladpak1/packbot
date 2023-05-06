@@ -31,7 +31,14 @@
             "Path.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "PackBot\\Tests\\": "tests/"
+        }
+    },
     "require-dev": {
-        "dominikb/composer-license-checker": "^2.4"
+        "dominikb/composer-license-checker": "^2.4",
+        "phpunit/phpunit": "^9.6",
+        "phpunit/php-code-coverage": "^9.2"
     }
 }

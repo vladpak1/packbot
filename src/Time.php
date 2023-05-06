@@ -12,8 +12,8 @@ class Time {
     /**
      * This class is used to work with time.
      */
-    public function __construct() {
-        $this->text = new Text();
+    public function __construct(?Text $text = null) {
+        $this->text = $text ?? new Text();
     }
 
     /**

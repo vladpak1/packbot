@@ -12,6 +12,7 @@ class Environment {
      * @throws EnvironmentException
      */
     public static function var(string $key) {
+        if (defined('TESTSUITE')) return self::varForTest($key);
         self::isConfigOK();
 
 
@@ -52,5 +53,15 @@ class Environment {
         if (!is_writable($configPath)) {
             throw new EnvironmentException('Config file is not writable. Please check the file permissions.');
         }
+    }
+
+    protected static function varForTest(string $key) {
+        $env = require Path::toRoot() . '/tests/config.test.php';
+
+        if (!isset($env[$key])) {
+            throw new EnvironmentException('Environment variable '.$key.' not found.');
+        }
+
+        return $env[$key];
     }
 }
