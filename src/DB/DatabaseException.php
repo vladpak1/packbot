@@ -1,6 +1,5 @@
 <?php
-
-use PackBot;
+namespace PackBot;
 
 class DatabaseException extends \Exception {
 
