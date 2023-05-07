@@ -293,8 +293,8 @@ class SiteMonitoringDB extends PackDB {
             $owners[] = array_filter(explode(',', $site['owners']), 'strlen');
         }
 
-        $owners = array_unique(array_merge(...$owners));
-
+        $owners = array_values(array_unique(array_merge(...$owners)));
+        
         return array(
             'count'  => count($owners),
             'owners' => $owners
