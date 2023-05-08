@@ -11,7 +11,7 @@ Please note that the bot is under development and is still very far from ideal.
 
 ### Prerequisites
 
-- PHP 8.0 or later
+- PHP 8.1 or later
 - Composer (PHP dependency manager)
 - A Telegram bot token obtained from @BotFather
 - (Optional) A Google PageSpeed API key
