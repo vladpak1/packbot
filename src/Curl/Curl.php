@@ -162,6 +162,11 @@ class Curl
         return $this;
     }
 
+    public function getOptions(): array
+    {
+        return $this->curlOptions;
+    }
+
     protected function setPageSpeed(PageSpeedResponse $pageSpeedResponse): self
     {
         $this->response->addPageSpeed($pageSpeedResponse);
