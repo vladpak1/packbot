@@ -6,11 +6,11 @@ use Longman\TelegramBot\Request;
 
 class Site implements \JsonSerializable
 {
-    use TimeTrait;
-
     protected array $data = [];
 
     protected Text $text;
+
+    protected Time $time;
 
     /**
      * This class represents a site in the monitoring system.
@@ -27,6 +27,7 @@ class Site implements \JsonSerializable
     {
         $this->data = SiteMonitoringDB::getSite($id);
         $this->text = new Text();
+        $this->time = new Time();
     }
 
     public function __toString()
@@ -92,12 +93,12 @@ class Site implements \JsonSerializable
 
     public function getFirstAlertSentTime()
     {
-        return $this->getRelativeTime(isset($this->getAdditionalData()['firstAlertSent']) ? $this->getAdditionalData()['firstAlertSent'] : 0);
+        return $this->time->timestampToUltimateHumanReadableRelativeTime(isset($this->getAdditionalData()['firstAlertSent']) ? $this->getAdditionalData()['firstAlertSent'] : 0);
     }
 
     public function getLastAlertSentTime()
     {
-        return $this->getRelativeTime(isset($this->getAdditionalData()['lastAlertSent']) ? $this->getAdditionalData()['lastAlertSent'] : 0);
+        return $this->time->timestampToUltimateHumanReadableRelativeTime(isset($this->getAdditionalData()['lastAlertSent']) ? $this->getAdditionalData()['lastAlertSent'] : 0);
     }
 
     public function getLastAlertTimestamp()
@@ -136,7 +137,7 @@ class Site implements \JsonSerializable
      */
     public function getLastCheckTime(): string
     {
-        return $this->getRelativeTime($this->getLastCheck());
+        return $this->time->timestampToUltimateHumanReadableRelativeTime($this->getLastCheck());
     }
 
     /**
