@@ -22,7 +22,9 @@
         "bopoda/robots-txt-parser": "^2.4",
         "kub-at/php-simple-html-dom-parser": "^1.9",
         "intervention/mimesniffer": "^0.4.2",
-        "spatie/dns": "^2.5"
+        "spatie/dns": "^2.5",
+        "chillerlan/php-qrcode": "dev-main#c8c37a4e36300f1fc4a7fb44ee22186eac1e60a4",
+        "intervention/image": "^2.7"
     },
     "autoload": {
         "classmap": [

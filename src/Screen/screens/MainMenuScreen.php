@@ -81,6 +81,11 @@ final class MainMenuScreen extends Screen
                 $screen->executeScreen();
 
                 return $this->command->getCallbackQuery()->answer();
+            case 'qrCode':
+                $screen = new QRCodeScreen($this->command);
+                $screen->executeScreen();
+
+                return $this->command->getCallbackQuery()->answer();
         }
     }
 
@@ -119,6 +124,11 @@ final class MainMenuScreen extends Screen
                     'text'          => '📜 ' . $this->text->e('Скрипты'),
                     'callback_data' => 'MainMenu_scripts',
                 ],
+            ],
+            [
+                [
+                    'text'          => '🔳 ' . $this->text->e('Генератор QR-кодов'),
+                    'callback_data' => 'MainMenu_qrCode',],
             ],
             [
                 [
