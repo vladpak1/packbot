@@ -1,7 +1,8 @@
 <?php
 
-namespace PackBot\Tests\Functional;
+namespace PackBot\Tests\Functional\Commands;
 
+use PackBot\Tests\Functional\CommandTestCase;
 use PackBot\UserSettings;
 
 class StartCommandTest extends CommandTestCase

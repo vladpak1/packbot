@@ -1,12 +1,13 @@
 <?php
 
-namespace PackBot\Tests\Functional;
+namespace PackBot\Tests\Functional\Commands;
 
+use PackBot\Tests\Functional\CommandTestCase;
 use PackBot\UserSettings;
 
-class MenuCommandTest extends CommandTestCase
+class HelpCommandTest extends CommandTestCase
 {
-    public string $command = '/menu';
+    public string $command = '/help';
 
     public function testCommandImplementsRussian()
     {
@@ -30,14 +31,9 @@ class MenuCommandTest extends CommandTestCase
             }),
             $this->callback(function ($request_params) {
                 $this->assertStringContainsString(
-                    'меню',
+                    'команды',
                     $request_params['form_params']['text']
-                ); // Asserting that bot will speak Russian
-
-                $this->assertStringContainsString(
-                    'Мониторинг',
-                    $this->getFirstButtonOfInlineKeyboard($request_params['form_params']['reply_markup'])['text']
-                ); // Asserting that InlineKeyabord is in Russian
+                );
 
                 return true;
             })
@@ -69,14 +65,9 @@ class MenuCommandTest extends CommandTestCase
             }),
             $this->callback(function ($request_params) {
                 $this->assertStringContainsString(
-                    'menu',
+                    'commands',
                     $request_params['form_params']['text']
-                ); // Asserting that bot will speak English
-
-                $this->assertStringContainsString(
-                    'monitoring',
-                    $this->getFirstButtonOfInlineKeyboard($request_params['form_params']['reply_markup'])['text']
-                ); // Asserting that InlineKeyabord is in English
+                );
 
                 return true;
             })
