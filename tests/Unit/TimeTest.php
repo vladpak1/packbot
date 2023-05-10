@@ -13,7 +13,11 @@ class TimeTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|Text $textMock
          */
-        $textMock = $this->getMockBuilder(Text::class)->getMock();
+        $textMock = $this
+        ->getMockBuilder(Text::class)
+        ->disableOriginalConstructor()
+        ->getMock();
+
         $textMock
         ->method('getCurrentLanguage')
         ->willReturn('ru_RU');
@@ -35,7 +39,11 @@ class TimeTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|Text $textMock
          */
-        $textMock = $this->getMockBuilder(Text::class)->getMock();
+        $textMock = $this
+        ->getMockBuilder(Text::class)
+        ->disableOriginalConstructor()
+        ->getMock();
+        
         $textMock
         ->method('getCurrentLanguage')
         ->willReturn('en_US');
