@@ -3,5 +3,4 @@ config.php
 .vscode
 /vendor
 /assets/cats
-.phpunit.result.cache
-.php-cs-fixer.cache
+*.cache
