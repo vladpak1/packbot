@@ -2,26 +2,31 @@
 
 namespace PackBot;
 
-class DnsTool implements ToolInterface {
-
-    protected array $domains = array();
+class DnsTool implements ToolInterface
+{
+    protected array $domains = [];
 
     protected Text $text;
 
-    protected array $result = array();
+    protected array $result = [];
 
     protected array $toolSettings;
 
     protected string $toolName = 'DnsTool';
 
-    public function __construct(array|string $domains) {
-        if (is_string($domains)) $domains = array($domains);
+    public function __construct(array|string $domains)
+    {
+        if (is_string($domains)) {
+            $domains = [$domains];
+        }
 
         $this->text = new Text();
 
         $this->toolSettings = Environment::var('tools_settings')[$this->toolName];
-        if ($this->toolSettings['enabled'] === false) throw new ToolException('Dns tool is temporarily disabled.');
 
+        if (false === $this->toolSettings['enabled']) {
+            throw new ToolException('Dns tool is temporarily disabled.');
+        }
 
         $this->domains = $domains;
         $this->prepareResults();
@@ -32,17 +37,20 @@ class DnsTool implements ToolInterface {
      * @example array(...records)
      * @see DnsRecord for the structure of the records.
      */
-    public function getResult(): array {
+    public function getResult(): array
+    {
         return $this->result;
     }
 
-    protected function prepareResults() {
+    protected function prepareResults()
+    {
         foreach ($this->domains as $domain) {
             $this->result[$domain] = $this->executeDns($domain);
         }
     }
 
-    protected function executeDns($domain) {
+    protected function executeDns($domain)
+    {
         try {
             $dns     = new Dns($domain);
             $records = $dns->execute()->getRecords();
@@ -50,9 +58,11 @@ class DnsTool implements ToolInterface {
             throw new ToolException(sprintf('Error while executing dns lookup for domain %s. Error: %s', $domain, $e->getMessage()));
         }
 
-        if (count($records) === 0) throw new ToolException(sprintf('No dns records found for domain %s.', $domain));
+        if (0 === count($records)) {
+            throw new ToolException(sprintf('No dns records found for domain %s.', $domain));
+        }
         Debug::toConsole($records);
+
         return $records;
     }
-
 }

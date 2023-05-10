@@ -1,5 +1,7 @@
 <?php
+
 namespace PackBot;
 
-class ToolException extends \Exception {
+class ToolException extends \Exception
+{
 }

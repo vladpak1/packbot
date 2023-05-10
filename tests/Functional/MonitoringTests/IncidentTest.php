@@ -10,15 +10,16 @@ use PackBot\UserSettings;
 /**
  * Base class for function command tests.
  */
-class IncidentTest extends TestWithEnvCase {
-
-    public function testAddingIncident() {
+class IncidentTest extends TestWithEnvCase
+{
+    public function testAddingIncident()
+    {
         /**
          * Adding example site for adding incident to it.
          */
         $userID  = mt_rand(1, 1000);
         $testUrl = 'https://example.com/' . mt_rand(1, 1000);
-        
+
         SiteMonitoringDB::addSite($testUrl);
         SiteMonitoringDB::assignOwnerToSite($testUrl, $userID);
         $siteID = SiteMonitoringDB::getUsersSitesIDs($userID)[0];
@@ -26,10 +27,10 @@ class IncidentTest extends TestWithEnvCase {
         /**
          * Adding incident to example site.
          */
-        $incident = IncidentFactory::createIncident($siteID, array(
-            'type'  => 'wrongCode',
-            'code'  => 404,
-        ));
+        $incident = IncidentFactory::createIncident($siteID, [
+            'type' => 'wrongCode',
+            'code' => 404,
+        ]);
 
         $this->assertLessThan(10, $incident->getDuration());
         $this->assertEquals($siteID, $incident->getSiteID());
@@ -37,13 +38,14 @@ class IncidentTest extends TestWithEnvCase {
         $this->assertIsInt($incident->getID());
     }
 
-    public function testResolvingIncident() {
+    public function testResolvingIncident()
+    {
         /**
          * Adding example site for adding incident to it.
          */
         $userID  = mt_rand(1, 1000);
         $testUrl = 'https://example.com/';
-        
+
         SiteMonitoringDB::addSite($testUrl);
         SiteMonitoringDB::assignOwnerToSite($testUrl, $userID);
         $siteID = SiteMonitoringDB::getUsersSitesIDs($userID)[0];
@@ -51,10 +53,10 @@ class IncidentTest extends TestWithEnvCase {
         /**
          * Adding incident to example site.
          */
-        $incident = IncidentFactory::createIncident($siteID, array(
-            'type'      => 'timeout',
-            'timeout'   => 10,
-        ));
+        $incident = IncidentFactory::createIncident($siteID, [
+            'type'    => 'timeout',
+            'timeout' => 10,
+        ]);
         $incidentID = $incident->getID();
 
         $this->assertFalse($incident->isIncidentResolved());
@@ -62,13 +64,14 @@ class IncidentTest extends TestWithEnvCase {
         $this->assertTrue($incident->isIncidentResolved());
     }
 
-    public function testDurationStrings() {
+    public function testDurationStrings()
+    {
         /**
          * Adding example site for adding incident to it.
          */
         $userID  = mt_rand(1, 1000);
         $testUrl = 'https://example.com/';
-        
+
         SiteMonitoringDB::addSite($testUrl);
         SiteMonitoringDB::assignOwnerToSite($testUrl, $userID);
         $siteID = SiteMonitoringDB::getUsersSitesIDs($userID)[0];
@@ -78,10 +81,9 @@ class IncidentTest extends TestWithEnvCase {
         $userID = mt_rand(1, 1000);
         UserSettings::setUserID($userID);
         $settings = new UserSettings($userID);
-        
 
         /**
-         * Incident #1
+         * Incident #1.
          */
         $incident = new Incident(1);
 
@@ -92,7 +94,7 @@ class IncidentTest extends TestWithEnvCase {
         $this->assertEquals('1 minute', $incident->getDurationString());
 
         /**
-         * Incident #2
+         * Incident #2.
          */
         $incident = new Incident(2);
 
@@ -103,7 +105,7 @@ class IncidentTest extends TestWithEnvCase {
         $this->assertEquals('10 seconds', $incident->getDurationString());
 
         /**
-         * Incident #3
+         * Incident #3.
          */
         $incident = new Incident(3);
 
@@ -114,7 +116,8 @@ class IncidentTest extends TestWithEnvCase {
         $this->assertEquals('2 days 3 hours', $incident->getDurationString());
     }
 
-    public function testNonExistingIncident() {
+    public function testNonExistingIncident()
+    {
         $this->expectException(\PackBot\IncidentException::class);
         $this->expectExceptionMessage('Incident with ID 0 does not exist.');
 

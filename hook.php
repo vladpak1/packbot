@@ -24,17 +24,17 @@ try {
     // Create Telegram API object
     $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
 
-    $commands_paths = array(
+    $commands_paths = [
         __DIR__ . '/Commands',
-    );
+    ];
     $telegram->addCommandsPaths($commands_paths);
 
-    $telegram->enableMySql(array(
+    $telegram->enableMySql([
         'host'     => $db_host,
         'user'     => $db_user,
         'password' => $db_password,
         'database' => $db_name,
-    ));
+    ]);
 
     $telegram->setDownloadPath(Path::toTemp());
 
@@ -56,11 +56,11 @@ try {
         \Longman\TelegramBot\TelegramLog::$always_log_request_and_response = true;
 
         Longman\TelegramBot\TelegramLog::initialize(
-        new Monolog\Logger('telegram_bot', [
+            new Monolog\Logger('telegram_bot', [
             (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-debug.log', Monolog\Logger::DEBUG))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
             (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-error.log', Monolog\Logger::ERROR))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
         ]),
-        new Monolog\Logger('telegram_bot_updates', [
+            new Monolog\Logger('telegram_bot_updates', [
             (new Monolog\Handler\StreamHandler(__DIR__ . '/php-telegram-bot-update.log', Monolog\Logger::INFO))->setFormatter(new Monolog\Formatter\LineFormatter('%message%' . PHP_EOL)),
         ])
         );
@@ -77,10 +77,8 @@ try {
         $telegram->enableLimiter();
     }
 
-
     //init PackDB
     PackDB::connect();
-
 
     // Handle telegram webhook request
     $telegram->handle();

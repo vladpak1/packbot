@@ -1,4 +1,5 @@
 <?php
+
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
@@ -8,12 +9,16 @@ use PackBot\UserSettings;
 
 class SettingsCommand extends UserCommand
 {
-    protected $name         = 'menu';
-    protected $description  = 'Main menu command.';
-    protected $usage        = '/menu';
-    protected $version      = '1.0.0';
+    protected $name = 'menu';
 
-    public function execute(): ServerResponse {
+    protected $description = 'Main menu command.';
+
+    protected $usage = '/menu';
+
+    protected $version = '1.0.0';
+
+    public function execute(): ServerResponse
+    {
 
         /**
          * Set userID to global static variable.
@@ -21,6 +26,7 @@ class SettingsCommand extends UserCommand
         UserSettings::setUserID($this->getMessage()->getFrom()->getId());
 
         $screen = new SettingsScreen($this);
+
         return $screen->executeScreen();
     }
 }

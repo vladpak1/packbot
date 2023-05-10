@@ -6,9 +6,10 @@ use PackBot\Time;
 use PHPUnit\Framework\TestCase;
 use PackBot\Text;
 
-class TimeTest extends TestCase {
-
-    public function testTimeRussian() {
+class TimeTest extends TestCase
+{
+    public function testTimeRussian()
+    {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|Text $textMock
          */
@@ -29,7 +30,8 @@ class TimeTest extends TestCase {
         $this->assertEquals('3 дня 6 часов', $time->secondsToHumanReadable(280800));
     }
 
-    public function testTimeEnglish() {
+    public function testTimeEnglish()
+    {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|Text $textMock
          */
@@ -49,6 +51,4 @@ class TimeTest extends TestCase {
         $this->assertEquals('1 day 4 hours', $time->secondsToHumanReadable(100800));
         $this->assertEquals('3 days 6 hours', $time->secondsToHumanReadable(280800));
     }
-
-
 }

@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class InvalidDomainException extends SiteMonitoringException {
-
+class InvalidDomainException extends SiteMonitoringException
+{
 }

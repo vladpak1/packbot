@@ -1,40 +1,43 @@
 <?php
 
-
 namespace PackBot;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class Cleaner {
-
+class Cleaner
+{
     protected array $cleanerSettings;
 
     /**
      * This class is used for this tasks:
      * 1. Delete sites that are not associated with any user.
      * 2. Remove sites that do not work for a long time.
-     * 3. Deleting temporary files
+     * 3. Deleting temporary files.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->cleanerSettings = Environment::var('monitoring_settings')['cleaner'];
         echo 'Cleaner created' . PHP_EOL;
     }
 
-    public function executeAll() {
+    public function executeAll()
+    {
         $this->deleteSitesWithNoOwners();
         $this->deleteSitesWithLongIncident();
         $this->deleteTempFiles();
         $this->deleteOldIncidents();
     }
 
-    public function deleteSitesWithNoOwners() {
+    public function deleteSitesWithNoOwners()
+    {
         echo 'Delete sites with no owners' . PHP_EOL;
         $removed = SiteMonitoringDB::removeSitesWithoutOwners();
         echo 'Removed: ' . $removed . PHP_EOL;
     }
 
-    public function deleteSitesWithLongIncident() {
+    public function deleteSitesWithLongIncident()
+    {
         $sites = SiteMonitoringDB::getSitesIDs();
         echo 'Delete sites with long incidents' . PHP_EOL;
         $removed = 0;
@@ -44,7 +47,7 @@ class Cleaner {
                 echo 'There is active incidents for site ' . $siteID . PHP_EOL;
 
                 $lastIncident = IncidentsDB::getLastIncident($siteID);
-                
+
                 $incident = new Incident($lastIncident['id']);
 
                 $durationToDeleteInSeconds = $this->cleanerSettings['incidentDurationToRemoveSite'] * 60;
@@ -73,7 +76,6 @@ class Cleaner {
 
                     SiteMonitoringDB::removeSite($siteID);
 
-
                     $removed++;
                 } else {
                     echo 'Duration is less than ' . $durationToDeleteInSeconds . ' seconds (in config.php)' . PHP_EOL;
@@ -84,18 +86,22 @@ class Cleaner {
         echo 'Removed: ' . $removed . PHP_EOL;
     }
 
-    public function deleteTempFiles() {
+    public function deleteTempFiles()
+    {
         $dir = Path::toTemp();
         echo 'Delete temp files in ' . $dir . PHP_EOL;
         $files = scandir($dir);
 
         $removed = 0;
 
-        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new RecursiveIteratorIterator($it,
-                RecursiveIteratorIterator::CHILD_FIRST);
+        $it    = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new RecursiveIteratorIterator(
+            $it,
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
         foreach($files as $file) {
-            if ($file->isDir()){
+            if ($file->isDir()) {
                 echo 'Remove dir: ' . $file->getRealPath() . PHP_EOL;
                 rmdir($file->getRealPath());
                 $removed++;
@@ -109,11 +115,10 @@ class Cleaner {
         echo 'Removed: ' . $removed . PHP_EOL;
     }
 
-    public function deleteOldIncidents() {
+    public function deleteOldIncidents()
+    {
         echo 'Delete old incidents' . PHP_EOL;
         $removed = IncidentsDB::removeOldIncidents();
         echo 'Removed: ' . $removed . PHP_EOL;
     }
-
-
 }

@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class IncidentException extends \Exception {
-
+class IncidentException extends \Exception
+{
 }

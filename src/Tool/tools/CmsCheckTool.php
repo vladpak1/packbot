@@ -5,24 +5,29 @@ namespace PackBot;
 use DetectCMS\DetectCMS;
 use Throwable;
 
-class CmsCheckTool implements ToolInterface {
-
-    protected array $domains = array();
+class CmsCheckTool implements ToolInterface
+{
+    protected array $domains = [];
 
     protected Text $text;
 
-    protected array $cmsInfo = array();
+    protected array $cmsInfo = [];
 
     protected array $toolSettings;
 
-    public function __construct(array|string $domains) {
-        if (is_string($domains)) $domains = array($domains);
+    public function __construct(array|string $domains)
+    {
+        if (is_string($domains)) {
+            $domains = [$domains];
+        }
 
         $this->text = new Text();
 
         $this->toolSettings = Environment::var('tools_settings')['CmsCheckTool'];
-        if ($this->toolSettings['enabled'] === false) throw new ToolException('Whois tool is temporarily disabled.');
 
+        if (false === $this->toolSettings['enabled']) {
+            throw new ToolException('Whois tool is temporarily disabled.');
+        }
 
         $this->domains = $domains;
         $this->getCMS();
@@ -32,17 +37,20 @@ class CmsCheckTool implements ToolInterface {
      * Get the result of the cms check.
      * @example array('example.com' => 'wordpress')
      */
-    public function getResult(): array {
+    public function getResult(): array
+    {
         return $this->cmsInfo;
     }
 
-    protected function getCMS() {
+    protected function getCMS()
+    {
         sleep(5);
+
         foreach ($this->domains as $domain) {
             sleep(10);
-            $this->cmsInfo[$domain] = array(
+            $this->cmsInfo[$domain] = [
                 'cms' => $this->realGetCMS($domain),
-            );
+            ];
         }
     }
 
@@ -50,44 +58,47 @@ class CmsCheckTool implements ToolInterface {
      * Shitty code. I know. Maybe I'll fix it later.
      * @todo
      */
-    protected function realGetCMS(string $domain) {
+    protected function realGetCMS(string $domain)
+    {
         try {
             @$cms = new DetectCMS($domain);
 
             $result = $cms->getResult();
-    
-            if ($result == '' || $result == false) {
+
+            if ('' == $result || false == $result) {
                 sleep(5);
                 /**
                  * Give it another try.
                  */
                 @$cms   = new DetectCMS($domain);
                 $result = $cms->getResult();
-    
-                if ($result == '' || $result == false) {
+
+                if ('' == $result || false == $result) {
                     /**
                      * Try to add https://.
                      */
                     sleep(2);
-                    if (str_contains($domain, 'https://') === false) {
+
+                    if (false === str_contains($domain, 'https://')) {
                         $domain = 'https://' . $domain;
                         @$cms   = new DetectCMS($domain);
                         $result = $cms->getResult();
-    
-                        if ($result == '' || $result == false) {
+
+                        if ('' == $result || false == $result) {
                             $result = 'unknown';
                         }
-    
+
                     } else {
                         $result = 'unknown';
                     }
                 }
             }
+
             return $result;
         } catch (Throwable $e) {
-            error_log('CmsCheckTool for domain '.$domain.': ' . $e->getMessage());
+            error_log('CmsCheckTool for domain ' . $domain . ': ' . $e->getMessage());
+
             throw new ToolException('Cannot check CMS for domain ' . $domain);
         }
     }
-
 }

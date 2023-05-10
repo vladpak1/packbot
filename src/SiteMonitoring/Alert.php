@@ -5,15 +5,15 @@ namespace PackBot;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Request;
 
-class Alert {
-
+class Alert
+{
     use TimeTrait;
 
     /**
      * Construct Alert data.
-     * @var int $siteID The ID of the site that triggered the alert.
+     * @var int         $siteID The ID of the site that triggered the alert.
      * @var array|false $reason The reason for the alert. If false, the alert is a recovery alert.
-     * @var string $alertType The type of the alert. Can be 'firstAlert', 'anotherAlert' or 'workingAgain'.
+     * @var string      $alertType The type of the alert. Can be 'firstAlert', 'anotherAlert' or 'workingAgain'.
      */
     protected array $data;
 
@@ -21,11 +21,10 @@ class Alert {
      * The users that are assigned to the site.
      * @var array $assignedUsers Array with user IDs.
      */
-    protected array $assignedUsers = array();
+    protected array $assignedUsers = [];
 
     /**
      * The type of the alert. Can be 'firstAlert', 'anotherAlert' or 'workingAgain'.
-     * @var string $alertType
      */
     protected string $alertType;
 
@@ -37,32 +36,35 @@ class Alert {
     /**
      * This class is representing an alert that is sent to the assigned users.
      * Alerts are sent to users when a site is down or when it's working again.
-     * 
+     *
      * The monitoring architecture assumes that one site has several owners,
      * so the scheme for sending alerts is organized as follows.
-     * 
-     * @param array $data The data of the alert.
-     * @var int $data['site_id'] The ID of the site that triggered the alert.
-     * @var array|false $data['reason'] The reason for the alert. If false, the alert is a recovery alert.
-     * @var string $data['alert_type'] The type of the alert. Can be 'firstAlert', 'anotherAlert' or 'workingAgain'.
+     *
+     * @param array       $data The data of the alert.
+     * @var   int         $data['site_id'] The ID of the site that triggered the alert.
+     * @var   array|false $data['reason'] The reason for the alert. If false, the alert is a recovery alert.
+     * @var   string      $data['alert_type'] The type of the alert. Can be 'firstAlert', 'anotherAlert' or 'workingAgain'.
      */
-    public function __construct(array $data) {
+    public function __construct(array $data)
+    {
         $this->data      = $data;
         $this->alertType = $this->getAlertType();
         $this->getAssignedUsers();
     }
-    
+
     /**
      * Get site ID.
      */
-    public function getSiteID(): int {
+    public function getSiteID(): int
+    {
         return $this->data['site_id'];
     }
 
     /**
      * Get site.
      */
-    public function getSite(): Site {
+    public function getSite(): Site
+    {
         return new Site($this->getSiteID());
     }
 
@@ -70,14 +72,16 @@ class Alert {
      * Get reason.
      * @return array|false The reason for the alert as an array. If false, the alert is a recovery alert.
      */
-    public function getReason(): array|false {
+    public function getReason(): array|false
+    {
         return $this->data['reason'];
     }
 
     /**
      * Get alert type.
      */
-    public function getAlertType(): string {
+    public function getAlertType(): string
+    {
         return $this->data['alert_type'];
     }
 
@@ -85,59 +89,67 @@ class Alert {
      * Send the alerts.
      * It is not necessary means that the alert will be sent to all users.
      */
-    public function send(): void {
+    public function send(): void
+    {
         if (empty($this->assignedUsers)) {
             echo 'No assigned users' . PHP_EOL;
+
             return;
         }
 
         switch($this->alertType) {
             case 'firstAlert':
                 $incident = IncidentFactory::createIncident($this->getSiteID(), $this->getReason());
-                SiteMonitoringDB::updateSiteData(array(
+                SiteMonitoringDB::updateSiteData([
                     'firstAlertSent'             => time(),
                     'lastAlertSent'              => time(),
                     'alertCount'                 => 1,
-                    'currentIssueAlertsDisabled' => array(),
+                    'currentIssueAlertsDisabled' => [],
                     'reason'                     => $this->getReason(),
-                    'incidentID'                 => $incident->getID()
-                ), $this->getSiteID());
+                    'incidentID'                 => $incident->getID(),
+                ], $this->getSiteID());
+
                 break;
             case 'anotherAlert':
                 /**
                  * Check if required time since last alert has passed.
                  */
-                $site = new Site($this->getSiteID());
+                $site                   = new Site($this->getSiteID());
                 $lastAlertSentTimestamp = $site->getLastAlertTimestamp();
 
-                $minsPassed    = $this->getTimestampsDifference($lastAlertSentTimestamp)['minutes'];
-                $minRequired   = Environment::var('monitoring_settings')['minsBetweenAlerts'];
+                $minsPassed  = $this->getTimestampsDifference($lastAlertSentTimestamp)['minutes'];
+                $minRequired = Environment::var('monitoring_settings')['minsBetweenAlerts'];
 
                 /**
                  * If there's more than 2 alerts, use minsAfterManyAlerts.
                  */
-                if ($site->getAlertsCount() >= 2) $minRequired = Environment::var('monitoring_settings')['minsAfterManyAlerts'];
+                if ($site->getAlertsCount() >= 2) {
+                    $minRequired = Environment::var('monitoring_settings')['minsAfterManyAlerts'];
+                }
 
                 if ($minsPassed < $minRequired) {
-                    echo 'Not enough time passed since last alert ('.$minsPassed.' passed, '.$minRequired.' required)' . PHP_EOL;
+                    echo 'Not enough time passed since last alert (' . $minsPassed . ' passed, ' . $minRequired . ' required)' . PHP_EOL;
+
                     return;
-                } else {
-                    echo 'Enough time passed since last alert ('.$minsPassed.' passed, '.$minRequired.' required)' . PHP_EOL;
                 }
+                echo 'Enough time passed since last alert (' . $minsPassed . ' passed, ' . $minRequired . ' required)' . PHP_EOL;
+
                 break;
             case 'workingAgain':
                 $incidentID = (new Site($this->getSiteID()))->getIncidentID();
+
                 if (empty($incidentID)) {
                     error_log(sprintf('No incident ID for site %s', $this->getSiteID()));
                     echo 'No incident ID!' . PHP_EOL;
+
                     return;
                 }
 
                 $incident = new Incident($incidentID);
                 $incident->resolve();
+
                 break;
         }
-
 
         foreach ($this->assignedUsers as $user) {
             $this->sendToUser(intval($user));
@@ -147,16 +159,20 @@ class Alert {
         /**
          * Clear issue data only after sending recovery alerts.
          */
-        if ($this->alertType == 'workingAgain') SiteMonitoringDB::clearSiteData($this->getSiteID());
+        if ('workingAgain' == $this->alertType) {
+            SiteMonitoringDB::clearSiteData($this->getSiteID());
+        }
     }
 
-    protected function getAssignedUsers() {
+    protected function getAssignedUsers()
+    {
         $this->assignedUsers = SiteMonitoringDB::getSiteOwners($this->getSiteID());
         echo PHP_EOL . 'Assigned users: ' . PHP_EOL;
         print_r($this->assignedUsers);
     }
 
-    protected function sendToUser(int $userID) {
+    protected function sendToUser(int $userID)
+    {
         echo 'Send alert to user: ' . $userID . PHP_EOL;
         /**
          * Apply user's settings.
@@ -166,13 +182,14 @@ class Alert {
         $this->text = new Text();
 
         match($this->getAlertType()) {
-            'firstAlert'    => $this->sendFirstAlert($userID),
-            'anotherAlert'  => $this->sendAnotherAlert($userID),
-            'workingAgain'  => $this->sendWorkingAgainAlert($userID),
+            'firstAlert'   => $this->sendFirstAlert($userID),
+            'anotherAlert' => $this->sendAnotherAlert($userID),
+            'workingAgain' => $this->sendWorkingAgainAlert($userID),
         };
     }
 
-    protected function sendFirstAlert(int $userID) {
+    protected function sendFirstAlert(int $userID)
+    {
         $text   = $this->text;
         $site   = new Site($this->getSiteID());
         $report = new Report();
@@ -183,20 +200,22 @@ class Alert {
                 $report->setTitle($text->sprintf('Сайт %s не работает! Проверьте его.', $site->getURL()));
                 $report->addBlock($text->sprintf('Сайт ответил кодом %s.', $reason['code']));
                 $report->addBlock('▶️ ' . HttpDescription::getCodeDescription($reason['code'], $text->getCurrentLanguage()));
+
                 break;
             case 'timeout':
                 $report->setTitle($text->sprintf('Сайт %s работает медленно! Проверьте его.', $site->getURL()));
                 $report->addBlock($text->sprintf('Ответа сайта пришлось ждать %s секунд.', $reason['timeout']));
+
                 break;
         }
 
-        $data = array(
-            'chat_id'       => PackDB::getChatIDByUserID($userID),
-            'text'          => $report->getReport(),
-            'parse_mode'    => 'HTML',
-            'reply_markup'  => $this->getAlertKeyboard(),
+        $data = [
+            'chat_id'                  => PackDB::getChatIDByUserID($userID),
+            'text'                     => $report->getReport(),
+            'parse_mode'               => 'HTML',
+            'reply_markup'             => $this->getAlertKeyboard(),
             'disable_web_page_preview' => true,
-        );
+        ];
 
         $response = Request::sendMessage($data);
 
@@ -206,8 +225,8 @@ class Alert {
         print_r($data);
     }
 
-
-    protected function sendAnotherAlert(int $userID) {
+    protected function sendAnotherAlert(int $userID)
+    {
         $text   = $this->text;
         $site   = new Site($this->getSiteID());
         $report = new Report();
@@ -216,10 +235,10 @@ class Alert {
         /**
          * Save last alert timestamp.
          */
-        SiteMonitoringDB::updateSiteData(array(
+        SiteMonitoringDB::updateSiteData([
             'lastAlertSent' => time(),
             'alertCount'    => $site->getAlertsCount() + 1,
-        ), $this->getSiteID());
+        ], $this->getSiteID());
 
         $report->setTitle($text->sprintf('Сайт %s все еще не работает, он перестал работать %s.', $site->getURL(), $this->getRelativeTime($site->getFirstAlertTimestamp())));
 
@@ -227,19 +246,21 @@ class Alert {
             case 'wrongCode':
                 $report->addBlock($text->sprintf('Сайт ответил кодом %s.', $reason['code']));
                 $report->addBlock('▶️ ' . HttpDescription::getCodeDescription($reason['code'], $text->getCurrentLanguage()));
+
                 break;
             case 'timeout':
                 $report->addBlock($text->sprintf('Ответа сайта пришлось ждать %s секунд.', $reason['timeout']));
+
                 break;
         }
 
-        $data = array(
-            'chat_id'       => PackDB::getChatIDByUserID($userID),
-            'text'          => $report->getReport(),
-            'parse_mode'    => 'HTML',
-            'reply_markup'  => $this->getAlertKeyboard(),
+        $data = [
+            'chat_id'                  => PackDB::getChatIDByUserID($userID),
+            'text'                     => $report->getReport(),
+            'parse_mode'               => 'HTML',
+            'reply_markup'             => $this->getAlertKeyboard(),
             'disable_web_page_preview' => true,
-        );
+        ];
 
         $response = Request::sendMessage($data);
 
@@ -250,21 +271,21 @@ class Alert {
 
     }
 
-    protected function sendWorkingAgainAlert(int $userID) {
+    protected function sendWorkingAgainAlert(int $userID)
+    {
         $text   = $this->text;
         $site   = new Site($this->getSiteID());
         $report = new Report();
 
-
         $report->setTitle($text->sprintf('Сайт %s заработал! Первая проблема была зафиксирована %s.', $site->getURL(), $this->getRelativeTime($site->getFirstAlertTimestamp())));
 
-        $data = array(
-            'chat_id'       => PackDB::getChatIDByUserID($userID),
-            'text'          => $report->getReport(),
-            'parse_mode'    => 'HTML',
-            'reply_markup'  => $this->getAlertKeyboard(),
+        $data = [
+            'chat_id'                  => PackDB::getChatIDByUserID($userID),
+            'text'                     => $report->getReport(),
+            'parse_mode'               => 'HTML',
+            'reply_markup'             => $this->getAlertKeyboard(),
             'disable_web_page_preview' => true,
-        );
+        ];
 
         $response = Request::sendMessage($data);
 
@@ -275,26 +296,27 @@ class Alert {
 
     }
 
-    protected function getAlertKeyboard(): InlineKeyboard {
-        $text = $this->text;
-        $site = new Site($this->getSiteID());
+    protected function getAlertKeyboard(): InlineKeyboard
+    {
+        $text     = $this->text;
+        $site     = new Site($this->getSiteID());
         $keyboard = new InlineKeyboard(
-            array(
-                array(
+            [
+                [
                     'text'          => '❌ ' . $text->e('Перестать отслеживать'),
                     'callback_data' => 'Site_deleteSite_' . $this->getSiteID(),
-                ),
-                array(
+                ],
+                [
                     'text'          => '🏠 ' . $text->e('Главное меню'),
                     'callback_data' => 'DomainChecks_backToMainMenu',
-                )
-            ),
-            array(
-                array(
+                ],
+            ],
+            [
+                [
                     'text'          => '📊 ' . $text->e('Статистика'),
                     'callback_data' => '{NEW}IncidentsList_incidentsList_' . $site->getID(),
-                ),
-            )
+                ],
+            ]
         );
 
         return $keyboard;

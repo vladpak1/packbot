@@ -7,7 +7,8 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Request;
 use PackBot\AdminStatistics;
 
-class BotStatsCommand extends AdminCommand {
+class BotStatsCommand extends AdminCommand
+{
     /**
      * @var string
      */
@@ -34,23 +35,22 @@ class BotStatsCommand extends AdminCommand {
     protected $need_mysql = true;
 
     /**
-     * Command execute method
+     * Command execute method.
      *
-     * @return ServerResponse
      */
-    public function execute(): ServerResponse {
+    public function execute(): ServerResponse
+    {
         $message = $this->getMessage();
 
         $chat_id = $message->getChat()->getId();
 
         $stat = new AdminStatistics();
-        
+
         $raw = print_r($stat->getRawData(), true);
-        
 
         $data = [
-            'chat_id' => $chat_id,
-            'text'    => $raw,
+            'chat_id'                  => $chat_id,
+            'text'                     => $raw,
             'disable_web_page_preview' => true,
         ];
 

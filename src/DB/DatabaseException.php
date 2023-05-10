@@ -1,7 +1,7 @@
 <?php
+
 namespace PackBot;
 
-class DatabaseException extends \Exception {
-
-
+class DatabaseException extends \Exception
+{
 }

@@ -2,7 +2,6 @@
 
 namespace PackBot;
 
-
-class PageSpeedException extends \Exception {
-
+class PageSpeedException extends \Exception
+{
 }

@@ -4,11 +4,12 @@ namespace PackBot\Tests\Functional;
 
 use PackBot\UserSettings;
 
-class MenuCommandTest extends CommandTestCase {
-
+class MenuCommandTest extends CommandTestCase
+{
     public string $command = '/menu';
 
-    public function testCommandImplementsRussian() {
+    public function testCommandImplementsRussian()
+    {
         $fakeUpdate = $this->generateUpdateForCommand($this->command);
         $response   = $this->generateSuccessfulTelegramResponse($fakeUpdate);
         $userID     = $fakeUpdate->getMessage()->getFrom()->getId();
@@ -20,27 +21,34 @@ class MenuCommandTest extends CommandTestCase {
         $this->client
         ->expects($this->once())
         ->method('post')
-        ->with($this->callback(function ($requestString) {
-            $expectedString = '/bot' . $this->dummyApiKey . '/sendMessage';
-            $this->assertEquals($expectedString, $requestString);
+        ->with(
+            $this->callback(function ($requestString) {
+                $expectedString = '/bot' . $this->dummyApiKey . '/sendMessage';
+                $this->assertEquals($expectedString, $requestString);
 
-            return true;
-        }),
-        $this->callback(function ($request_params) {
-            $this->assertStringContainsString('меню',
-            $request_params['form_params']['text']); // Asserting that bot will speak Russian
+                return true;
+            }),
+            $this->callback(function ($request_params) {
+                $this->assertStringContainsString(
+                    'меню',
+                    $request_params['form_params']['text']
+                ); // Asserting that bot will speak Russian
 
-            $this->assertStringContainsString('Мониторинг',
-            $this->getFirstButtonOfInlineKeyboard($request_params['form_params']['reply_markup'])['text']); // Asserting that InlineKeyabord is in Russian
+                $this->assertStringContainsString(
+                    'Мониторинг',
+                    $this->getFirstButtonOfInlineKeyboard($request_params['form_params']['reply_markup'])['text']
+                ); // Asserting that InlineKeyabord is in Russian
 
-            return true;
-        }))
+                return true;
+            })
+        )
         ->willReturn($response);
 
         $this->telegram->processUpdate($fakeUpdate);
     }
 
-    public function testCommandImplementsEnglish() {
+    public function testCommandImplementsEnglish()
+    {
         $fakeUpdate = $this->generateUpdateForCommand($this->command);
         $response   = $this->generateSuccessfulTelegramResponse($fakeUpdate);
         $userID     = $fakeUpdate->getMessage()->getFrom()->getId();
@@ -52,21 +60,27 @@ class MenuCommandTest extends CommandTestCase {
         $this->client
         ->expects($this->once())
         ->method('post')
-        ->with($this->callback(function ($requestString) {
-            $expectedString = '/bot' . $this->dummyApiKey . '/sendMessage';
-            $this->assertEquals($expectedString, $requestString);
+        ->with(
+            $this->callback(function ($requestString) {
+                $expectedString = '/bot' . $this->dummyApiKey . '/sendMessage';
+                $this->assertEquals($expectedString, $requestString);
 
-            return true;
-        }),
-        $this->callback(function ($request_params) {
-            $this->assertStringContainsString('menu',
-            $request_params['form_params']['text']); // Asserting that bot will speak English
+                return true;
+            }),
+            $this->callback(function ($request_params) {
+                $this->assertStringContainsString(
+                    'menu',
+                    $request_params['form_params']['text']
+                ); // Asserting that bot will speak English
 
-            $this->assertStringContainsString('monitoring',
-            $this->getFirstButtonOfInlineKeyboard($request_params['form_params']['reply_markup'])['text']); // Asserting that InlineKeyabord is in English
+                $this->assertStringContainsString(
+                    'monitoring',
+                    $this->getFirstButtonOfInlineKeyboard($request_params['form_params']['reply_markup'])['text']
+                ); // Asserting that InlineKeyabord is in English
 
-            return true;
-        }))
+                return true;
+            })
+        )
         ->willReturn($response);
 
         $this->telegram->processUpdate($fakeUpdate);

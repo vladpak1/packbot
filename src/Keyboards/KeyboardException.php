@@ -1,6 +1,7 @@
 <?php
+
 namespace PackBot;
 
-class KeyboardException extends \Exception {
-
+class KeyboardException extends \Exception
+{
 }

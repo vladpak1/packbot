@@ -5,9 +5,8 @@ namespace PackBot;
 /**
  * Entity is a class that represents some data entity that can be converted to json.
  */
-abstract class Entity implements \JsonSerializable {
-
-
+abstract class Entity implements \JsonSerializable
+{
     /**
      * Serialize to json all properties of the class.
      * @return string json

@@ -5,45 +5,55 @@ namespace PackBot;
 use Spatie\Dns\Dns as DnsSpatie;
 use Spatie\Dns\Support\Domain;
 
-class Dns {
-
+class Dns
+{
     protected string $domain;
 
     protected bool $isExecuted = false;
 
-    protected array $records = array();
+    protected array $records = [];
 
     /**
      * This class is a wrapper for the spatie/dns package.
-     * 
-     * @param string $domain The domain to lookup.
+     *
+     * @param  string       $domain The domain to lookup.
      * @throws DnsException
      */
-    public function __construct(string $domain) {
+    public function __construct(string $domain)
+    {
         $this->domain = Url::getDomain($domain);
     }
 
-    public function execute(): self {
-        if ($this->isExecuted) throw new DnsException('Dns lookup already executed.');
+    public function execute(): self
+    {
+        if ($this->isExecuted) {
+            throw new DnsException('Dns lookup already executed.');
+        }
         $this->realExecute();
+
         return $this;
     }
 
     /**
      * @return DnsRecords[] Array of DnsRecords.
      */
-    public function getRecords(): array {
-        if (!$this->isExecuted) throw new DnsException('Dns lookup not executed.');
+    public function getRecords(): array
+    {
+        if (!$this->isExecuted) {
+            throw new DnsException('Dns lookup not executed.');
+        }
+
         return $this->records;
     }
 
-    protected function realExecute() {
+    protected function realExecute()
+    {
         try {
             $this->isExecuted = true;
 
             $dns             = new DnsSpatie();
             $records         = $dns->getRecords(new Domain($this->domain));
-            $recordsPrepared = array();
+            $recordsPrepared = [];
 
             foreach ($records as $record) {
                 /**

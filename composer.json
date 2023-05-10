@@ -40,6 +40,11 @@
     "require-dev": {
         "dominikb/composer-license-checker": "^2.4",
         "phpunit/phpunit": "^9.6",
-        "phpunit/php-code-coverage": "^9.2"
+        "phpunit/php-code-coverage": "^9.2",
+        "friendsofphp/php-cs-fixer": "^3.16"
+    },
+    "scripts": {
+        "test": "\"vendor/bin/phpunit\"",
+        "fix": "\"vendor/bin/php-cs-fixer\" fix --verbose --diff"
     }
 }

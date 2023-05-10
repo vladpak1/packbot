@@ -2,24 +2,26 @@
 
 namespace PackBot;
 
-class Report extends Text {
-
+class Report extends Text
+{
     protected string $title = '';
 
-    protected array $blocks = array();
+    protected array $blocks = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-
-    public function setTitle(string $title): Report {
+    public function setTitle(string $title): Report
+    {
         $this->title = '<b>' . $this->e($title) . '</b>';
 
         return $this;
     }
 
-    public function addBlock(string|array $text): Report {
+    public function addBlock(string|array $text): Report
+    {
         if (is_array($text)) {
             $this->blocks[] = $this->concat('', ...$text);
         } else {
@@ -29,7 +31,8 @@ class Report extends Text {
         return $this;
     }
 
-    public function addBlocks(array $blocks): Report {
+    public function addBlocks(array $blocks): Report
+    {
         foreach ($blocks as $block) {
             $this->addBlock($block);
         }
@@ -37,13 +40,14 @@ class Report extends Text {
         return $this;
     }
 
-    public function getReport(): string {
+    public function getReport(): string
+    {
         $report = $this->title . PHP_EOL . PHP_EOL;
+
         foreach ($this->blocks as $block) {
             $report .= $block . PHP_EOL . PHP_EOL;
         }
 
         return $report;
     }
-
 }

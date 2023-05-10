@@ -1,5 +1,7 @@
 <?php
+
 use PackBot\Environment;
+
 // Load composer
 require __DIR__ . '/vendor/autoload.php';
 
@@ -17,6 +19,7 @@ try {
 
     // Set webhook
     $result = $telegram->setWebhook($hook_url);
+
     if ($result->isOk()) {
         echo $result->getDescription();
     } else {

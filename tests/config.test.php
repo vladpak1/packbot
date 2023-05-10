@@ -2,9 +2,9 @@
 /**
  * This config will be used during tests.
  */
-return array(
+return [
     /**
-     * Telegram Bot API key
+     * Telegram Bot API key.
      */
     'bot_api_key' => '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11',
     /**
@@ -12,20 +12,20 @@ return array(
      */
     'cronjob_key' => 'sdfsdf212',
     /**
-     * Telegram Bot username
+     * Telegram Bot username.
      */
     'bot_username' => 'testbot',
     /**
-     * Webhook URL
+     * Webhook URL.
      */
     'hook_url' => 'https://example.com/hook.php',
     /**
-     * MySQL connection settings
+     * MySQL connection settings.
      */
-    'db_host' => 'localhost',
-    'db_user' => 'root',
+    'db_host'     => 'localhost',
+    'db_user'     => 'root',
     'db_password' => '',
-    'db_name' => 'packbottest',
+    'db_name'     => 'packbottest',
     /**
      * Do we need to enable global limiter?
      * If enabled, the telegram will try to limit the number of requests to 1 per second.
@@ -40,74 +40,74 @@ return array(
     /**
      * Specify admins IDs to enable some technical commands in the chat.
      */
-    'admins' => array(
+    'admins' => [
         285177721,
-    ),
+    ],
     /**
      * Specify the users ID that can't access the bot.
      */
-    'banList' => array(
-    ),
+    'banList' => [
+    ],
     /**
-     * Screen settings
+     * Screen settings.
      */
-    'screen_settings' => array(
+    'screen_settings' => [
         'useTempMessages' => false,
-    ),
-    'tools_settings' => array(
-        'WhoisTool' => array(
-            'enabled' => true,
+    ],
+    'tools_settings' => [
+        'WhoisTool' => [
+            'enabled'          => true,
             'maxDomainsAtOnce' => 10,
-        ),
-        'CmsCheckTool' => array(
+        ],
+        'CmsCheckTool' => [
             'enabled' => true,
-        ),
-        'ServerResponseCheckTool' => array(
+        ],
+        'ServerResponseCheckTool' => [
             'enabled' => true,
-        ),
-        'PageSpeedTool' => array(
+        ],
+        'PageSpeedTool' => [
             'enabled' => true,
-            'apiKey' => 'apiKey',
-        ),
-        'RedirectTraceTool' => array(
-            'enabled' => true,
-            'maxRedirects' => 30,
+            'apiKey'  => 'apiKey',
+        ],
+        'RedirectTraceTool' => [
+            'enabled'          => true,
+            'maxRedirects'     => 30,
             'maxDomainsAtOnce' => 10,
-        ),
-        'IndexPossibilityCheckTool' => array(
-            'enabled' => true,
+        ],
+        'IndexPossibilityCheckTool' => [
+            'enabled'          => true,
             'maxDomainsAtOnce' => 10,
-        ),
-        'SitemapParserTool' => array(
-            'enabled' => false,
-            'maxSitemapsAtOnce' => 150,
-            'timeLimit' => 600,
+        ],
+        'SitemapParserTool' => [
+            'enabled'             => false,
+            'maxSitemapsAtOnce'   => 150,
+            'timeLimit'           => 600,
             'sitemapCurlWaitTime' => 50,
-        ),
-        'UrlTrimmerTool' => array(
+        ],
+        'UrlTrimmerTool' => [
             'maxUrlsAtOnce' => 100000,
-        ),
-        'DnsTool' => array(
-            'enabled' => true,
+        ],
+        'DnsTool' => [
+            'enabled'          => true,
             'maxDomainsAtOnce' => 10,
-        ),
-    ),
-    'monitoring_settings' => array(
-        'maxSitesPerUser' => 30,
-        'minsBetweenAlerts'=> 1,
+        ],
+    ],
+    'monitoring_settings' => [
+        'maxSitesPerUser'     => 30,
+        'minsBetweenAlerts'   => 1,
         'minsAfterManyAlerts' => 2,
-        'siteChecker' => array(
-            'downStateConditions' => array(
+        'siteChecker'         => [
+            'downStateConditions' => [
                 'timeout' => 5,
-            ),
-            'siteCheckInterval' => 1, //mins
+            ],
+            'siteCheckInterval'     => 1, //mins
             'downSiteCheckInterval' => 1, //mins
-            'noCacheUrl' => true, //add random param to url to prevent caching
-            'disabled' => false, //disable site checks
-        ),
-        'cleaner' => array( //cleaner settings
+            'noCacheUrl'            => true, //add random param to url to prevent caching
+            'disabled'              => false, //disable site checks
+        ],
+        'cleaner' => [ //cleaner settings
             //3 days
             'incidentDurationToRemoveSite' => 4320, //Incident time in minutes after which the site will be removed
-        ),
-    ),
-);
+        ],
+    ],
+];

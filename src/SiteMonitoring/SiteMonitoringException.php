@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class SiteMonitoringException extends \Exception {
-
+class SiteMonitoringException extends \Exception
+{
 }

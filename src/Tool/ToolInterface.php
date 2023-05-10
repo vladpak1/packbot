@@ -2,12 +2,11 @@
 
 namespace PackBot;
 
-interface ToolInterface {
-
+interface ToolInterface
+{
     /**
      * Tool constructor.
      * The domains must be checked for validity before passing them to the constructor.
-     * @param array|string $domains
      * @throws ToolException
      */
     public function __construct(array|string $domains);

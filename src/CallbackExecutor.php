@@ -5,15 +5,17 @@ namespace PackBot;
 use Longman\TelegramBot\Commands\SystemCommands\CallbackqueryCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 
-class CallbackExecutor {
-
+class CallbackExecutor
+{
     protected CallbackqueryCommand $command;
 
-    public function __construct($command) {
+    public function __construct($command)
+    {
         $this->command = $command;
     }
 
-    public function execute(): ServerResponse {
+    public function execute(): ServerResponse
+    {
         /**
          * Callback data is a string with information about that callback.
          * First comes the name of the screen to which this callback belongs,
@@ -22,10 +24,10 @@ class CallbackExecutor {
         $callback    = $this->command->getCallbackQuery()->getData();
         $callback    = explode('_', $callback);
         $callback[0] = $callback[0] . 'Screen';
-        $newMessage = false;
+        $newMessage  = false;
 
         if (str_contains($callback[0], '{NEW}')) {
-            $newMessage = true;
+            $newMessage  = true;
             $callback[0] = str_replace('{NEW}', '', $callback[0]);
         }
 
@@ -41,32 +43,33 @@ class CallbackExecutor {
             $screen->blockSideExecute();
         }
 
-        if (count($callback) == 2) {
+        if (2 == count($callback)) {
             return $screen->executeCallback($callback[1]);
-        } elseif (count($callback) == 3) {
+        } elseif (3 == count($callback)) {
             return $screen->executeCallbackWithAdditionalData($callback[1], $callback[2]);
-        } elseif (count($callback) == 4) {
+        } elseif (4 == count($callback)) {
             return $screen->executeCallbackWithAdditionalData($callback[1], $callback[2], $callback[3]);
-        } elseif (count($callback) == 5) {
+        } elseif (5 == count($callback)) {
             return $screen->executeCallbackWithAdditionalData($callback[1], $callback[2], $callback[3], $callback[4]);
-        } else {
-            throw new ScreenException('Callback data is invalid: ' . print_r($callback, true));
         }
+
+        throw new ScreenException('Callback data is invalid: ' . print_r($callback, true));
+
     }
 
     /**
      * Forcing directly pushed callback to be executed.
-     * 
+     *
      * @param string $callback The string just as is in telegram callback data.
-     * @return ServerResponse
      */
-    public function forceCallback(string $callback): ServerResponse {
-        $callback = explode('_', $callback);
+    public function forceCallback(string $callback): ServerResponse
+    {
+        $callback    = explode('_', $callback);
         $callback[0] = $callback[0] . 'Screen';
-        $newMessage = false;
+        $newMessage  = false;
 
         if (str_contains($callback[0], '{NEW}')) {
-            $newMessage = true;
+            $newMessage  = true;
             $callback[0] = str_replace('{NEW}', '', $callback[0]);
         }
 
@@ -82,12 +85,13 @@ class CallbackExecutor {
             $screen->blockSideExecute();
         }
 
-        if (count($callback) == 2) {
+        if (2 == count($callback)) {
             return $screen->executeCallback($callback[1]);
-        } elseif (count($callback) == 3) {
+        } elseif (3 == count($callback)) {
             return $screen->executeCallbackWithAdditionalData($callback[1], $callback[2]);
-        } else {
-            throw new ScreenException('Callback data is invalid: ' . print_r($callback, true));
         }
+
+        throw new ScreenException('Callback data is invalid: ' . print_r($callback, true));
+
     }
 }

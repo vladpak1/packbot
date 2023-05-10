@@ -1,4 +1,5 @@
 <?php
+
 namespace PackBot;
 
 use Longman\TelegramBot\Commands\Command;
@@ -6,12 +7,12 @@ use Longman\TelegramBot\Commands\SystemCommands\CallbackqueryCommand;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 
-interface ScreenInterface {
-
+interface ScreenInterface
+{
     /**
      * The screen receives the context from UserCommand of CallbackqueryCommand.
-     * Class instance must be immutable
-     * 
+     * Class instance must be immutable.
+     *
      * @param UserCommand|CallbackqueryCommand Required. A command or callback object that implements a screen.
      */
     public function __construct(Command $command);

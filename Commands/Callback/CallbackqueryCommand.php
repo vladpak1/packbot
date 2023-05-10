@@ -1,6 +1,6 @@
 <?php
 /**
- * Callback query command
+ * Callback query command.
  *
  * This command handles all callback queries sent via inline keyboard buttons.
  *
@@ -33,9 +33,8 @@ class CallbackqueryCommand extends SystemCommand
     protected $version = '1.0.0';
 
     /**
-     * Main command execution
+     * Main command execution.
      *
-     * @return ServerResponse
      * @throws \Exception
      */
     public function execute(): ServerResponse
@@ -49,14 +48,16 @@ class CallbackqueryCommand extends SystemCommand
         try {
 
             $callbackExecutor = new CallbackExecutor($this);
+
             return $callbackExecutor->execute();
 
         } catch (\Throwable $th) {
             $text = new Text();
             error_log($th->getMessage() . PHP_EOL . $th->getTraceAsString());
+
             return Request::sendMessage([
                 'chat_id' => $this->getCallbackQuery()->getMessage()->getChat()->getId(),
-                'text' => $text->e('Что-то пошло не так. Попробуйте еще раз или используйте /reload, чтобы перезагрузить бота.'),
+                'text'    => $text->e('Что-то пошло не так. Попробуйте еще раз или используйте /reload, чтобы перезагрузить бота.'),
             ]);
         }
     }

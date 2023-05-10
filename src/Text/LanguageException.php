@@ -1,6 +1,7 @@
 <?php
+
 namespace PackBot;
 
-class LanguageException extends \Exception {
-    
+class LanguageException extends \Exception
+{
 }

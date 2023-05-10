@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class CloudflareCheckerException extends \Exception {
-    
+class CloudflareCheckerException extends \Exception
+{
 }

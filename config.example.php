@@ -1,10 +1,10 @@
 <?php
 /**
- * Bot Config Sample
+ * Bot Config Sample.
  */
-return array(
+return [
     /**
-     * Telegram Bot API key
+     * Telegram Bot API key.
      */
     'bot_api_key' => 'api_key',
     /**
@@ -12,20 +12,20 @@ return array(
      */
     'cronjob_key' => 'random_key_to_run_cronjob',
     /**
-     * Telegram Bot username
+     * Telegram Bot username.
      */
     'bot_username' => 'user_name_without_@',
     /**
-     * Webhook URL
+     * Webhook URL.
      */
     'hook_url' => 'full_link_to_hook.php',
     /**
-     * MySQL connection settings
+     * MySQL connection settings.
      */
-    'db_host' => 'localhost',
-    'db_user' => 'user',
+    'db_host'     => 'localhost',
+    'db_user'     => 'user',
     'db_password' => 'pass',
-    'db_name' => 'name',
+    'db_name'     => 'name',
     /**
      * Do we need to enable global limiter?
      * If enabled, the telegram will try to limit the number of requests to 1 per second.
@@ -40,75 +40,75 @@ return array(
     /**
      * Specify admins IDs to enable some technical commands in the chat.
      */
-    'admins' => array(
+    'admins' => [
         //array of integers
-    ),
+    ],
     /**
      * Specify the users ID that can't access the bot.
      */
-    'banList' => array(
+    'banList' => [
         //array of integers
-    ),
+    ],
     /**
-     * Screen settings
+     * Screen settings.
      */
-    'screen_settings' => array(
+    'screen_settings' => [
         'useTempMessages' => false,
-    ),
-    'tools_settings' => array(
-        'WhoisTool' => array(
-            'enabled' => true,
+    ],
+    'tools_settings' => [
+        'WhoisTool' => [
+            'enabled'          => true,
             'maxDomainsAtOnce' => 10,
-        ),
-        'CmsCheckTool' => array(
+        ],
+        'CmsCheckTool' => [
             'enabled' => true,
-        ),
-        'ServerResponseCheckTool' => array(
+        ],
+        'ServerResponseCheckTool' => [
             'enabled' => true,
-        ),
-        'PageSpeedTool' => array(
+        ],
+        'PageSpeedTool' => [
             'enabled' => true,
-            'apiKey' => 'api_key', //leave it empty to use PageSpeed without api key (less requests per day)
-        ),
-        'RedirectTraceTool' => array(
-            'enabled' => true,
-            'maxRedirects' => 30,
+            'apiKey'  => 'api_key', //leave it empty to use PageSpeed without api key (less requests per day)
+        ],
+        'RedirectTraceTool' => [
+            'enabled'          => true,
+            'maxRedirects'     => 30,
             'maxDomainsAtOnce' => 10,
-        ),
-        'IndexPossibilityCheckTool' => array(
-            'enabled' => true,
+        ],
+        'IndexPossibilityCheckTool' => [
+            'enabled'          => true,
             'maxDomainsAtOnce' => 10,
-        ),
-        'SitemapParserTool' => array(
-            'enabled' => false,
-            'maxSitemapsAtOnce' => 150,
-            'timeLimit' => 600,
+        ],
+        'SitemapParserTool' => [
+            'enabled'             => false,
+            'maxSitemapsAtOnce'   => 150,
+            'timeLimit'           => 600,
             'sitemapCurlWaitTime' => 50,
-        ),
-        'UrlTrimmerTool' => array(
+        ],
+        'UrlTrimmerTool' => [
             'maxUrlsAtOnce' => 100000,
-        ),
-        'DnsTool' => array(
-            'enabled' => true,
+        ],
+        'DnsTool' => [
+            'enabled'          => true,
             'maxDomainsAtOnce' => 10,
-        ),
-    ),
-    'monitoring_settings' => array(
-        'maxSitesPerUser' => 10,
-        'minsBetweenAlerts'=> 30,
+        ],
+    ],
+    'monitoring_settings' => [
+        'maxSitesPerUser'     => 10,
+        'minsBetweenAlerts'   => 30,
         'minsAfterManyAlerts' => 320,
-        'siteChecker' => array(
-            'downStateConditions' => array(
+        'siteChecker'         => [
+            'downStateConditions' => [
                 'timeout' => 5,
-            ),
-            'siteCheckInterval' => 10, //mins
+            ],
+            'siteCheckInterval'     => 10, //mins
             'downSiteCheckInterval' => 3, //mins
-            'noCacheUrl' => true, //add random param to url to prevent caching
-            'disabled' => false, //disable site checks
-        ),
-        'cleaner' => array( //cleaner settings
+            'noCacheUrl'            => true, //add random param to url to prevent caching
+            'disabled'              => false, //disable site checks
+        ],
+        'cleaner' => [ //cleaner settings
             //3 days
             'incidentDurationToRemoveSite' => 4320, //Incident time in minutes after which the site will be removed
-        ),
-    ),
-);
+        ],
+    ],
+];

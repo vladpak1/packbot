@@ -2,10 +2,9 @@
 
 namespace PackBot;
 
-
-class PageSpeedTool implements ToolInterface {
-
-    protected array $domains = array();
+class PageSpeedTool implements ToolInterface
+{
+    protected array $domains = [];
 
     protected Text $text;
 
@@ -15,14 +14,19 @@ class PageSpeedTool implements ToolInterface {
 
     protected string $toolName = 'PageSpeedTool';
 
-    public function __construct(array|string $domains) {
-        if (is_string($domains)) $domains = array($domains);
+    public function __construct(array|string $domains)
+    {
+        if (is_string($domains)) {
+            $domains = [$domains];
+        }
 
         $this->text = new Text();
 
         $this->toolSettings = Environment::var('tools_settings')[$this->toolName];
-        if ($this->toolSettings['enabled'] === false) throw new ToolException($this->toolName . ' is temporarily disabled.');
 
+        if (false === $this->toolSettings['enabled']) {
+            throw new ToolException($this->toolName . ' is temporarily disabled.');
+        }
 
         $this->domains = $domains;
         $this->prepareResults();
@@ -33,17 +37,20 @@ class PageSpeedTool implements ToolInterface {
      * @example array('example.com' => PageSpeedResponse)
      * @see PageSpeedResponse for more details.
      */
-    public function getResult(): array {
+    public function getResult(): array
+    {
         return $this->result;
     }
 
-    protected function prepareResults() {
+    protected function prepareResults()
+    {
         foreach ($this->domains as $domain) {
             $this->result[$domain] = $this->executePageSpeed($domain);
         }
     }
 
-    protected function executePageSpeed($domain): PageSpeedResponse {
+    protected function executePageSpeed($domain): PageSpeedResponse
+    {
         try {
             $pagespeed = new PageSpeed($domain);
 
@@ -53,8 +60,9 @@ class PageSpeedTool implements ToolInterface {
 
         } catch (PageSpeedException $e) {
             error_log('Cannot get PageSpeed info for ' . $domain . '. ' . $e->getMessage());
+
             throw new ToolException('Cannot get PageSpeed info for ' . $domain . ': ' . $e->getMessage());
         }
-        
+
     }
 }

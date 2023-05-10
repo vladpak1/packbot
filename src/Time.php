@@ -5,14 +5,15 @@ namespace PackBot;
 use DateTime;
 use IntlDateFormatter;
 
-class Time {
-
+class Time
+{
     protected Text $text;
 
     /**
      * This class is used to work with time.
      */
-    public function __construct(?Text $text = null) {
+    public function __construct(?Text $text = null)
+    {
         $this->text = $text ?? new Text();
     }
 
@@ -20,16 +21,19 @@ class Time {
      * A universal function for converting a timestamp to human-readable relative time.
      * Supports all units of time, but includes them in the string only when necessary (for example, 1 minute 20 seconds or 2 days 3 hours, 5 days).
      * Optionally can add the word "back" or "in".
-     * 
-     * @param int $timestamp Required. The timestamp.
+     *
+     * @param int  $timestamp Required. The timestamp.
      * @param bool $addBackIn Optional. Whether to add the word "back" or "in" to the beginning of the string. Default: false.
      */
-    public function timestampToUltimateHumanReadableRelativeTime(int $timestamp, bool $addBackIn = true): string {
+    public function timestampToUltimateHumanReadableRelativeTime(int $timestamp, bool $addBackIn = true): string
+    {
 
-        if ($timestamp == 0) return $this->text->e('никогда');
+        if (0 == $timestamp) {
+            return $this->text->e('никогда');
+        }
 
         $lang = $this->text->getCurrentLanguage();
-        $now = time();
+        $now  = time();
         $diff = date_diff(new DateTime("@$timestamp"), new DateTime("@$now"));
 
         $years   = $diff->y;
@@ -41,20 +45,22 @@ class Time {
 
         switch($lang) {
             case 'ru_RU':
-                $yearWord   = $this->declension($years, array('год', 'года', 'лет'));
-                $monthWord  = $this->declension($months, array('месяц', 'месяца', 'месяцев'));
-                $dayWord    = $this->declension($days, array('день', 'дня', 'дней'));
-                $hourWord   = $this->declension($hours, array('час', 'часа', 'часов'));
-                $minuteWord = $this->declension($minutes, array('минута', 'минуты', 'минут'));
-                $secondWord = $this->declension($seconds, array('секунда', 'секунды', 'секунд'));
+                $yearWord   = $this->declension($years, ['год', 'года', 'лет']);
+                $monthWord  = $this->declension($months, ['месяц', 'месяца', 'месяцев']);
+                $dayWord    = $this->declension($days, ['день', 'дня', 'дней']);
+                $hourWord   = $this->declension($hours, ['час', 'часа', 'часов']);
+                $minuteWord = $this->declension($minutes, ['минута', 'минуты', 'минут']);
+                $secondWord = $this->declension($seconds, ['секунда', 'секунды', 'секунд']);
+
                 break;
             case 'en_US':
-                $yearWord   = $this->declension($years, array('year', 'years', 'years'));
-                $monthWord  = $this->declension($months, array('month', 'months', 'months'));
-                $dayWord    = $this->declension($days, array('day', 'days', 'days'));
-                $hourWord   = $this->declension($hours, array('hour', 'hours', 'hours'));
-                $minuteWord = $this->declension($minutes, array('minute', 'minutes', 'minutes'));
-                $secondWord = $this->declension($seconds, array('second', 'seconds', 'seconds'));
+                $yearWord   = $this->declension($years, ['year', 'years', 'years']);
+                $monthWord  = $this->declension($months, ['month', 'months', 'months']);
+                $dayWord    = $this->declension($days, ['day', 'days', 'days']);
+                $hourWord   = $this->declension($hours, ['hour', 'hours', 'hours']);
+                $minuteWord = $this->declension($minutes, ['minute', 'minutes', 'minutes']);
+                $secondWord = $this->declension($seconds, ['second', 'seconds', 'seconds']);
+
                 break;
         }
 
@@ -64,43 +70,59 @@ class Time {
         if ($years > 3) {
             return "{$years} {$yearWord}" . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
-        if ($years <= 3 && $years != 0) {
+
+        if ($years <= 3 && 0 != $years) {
             return "{$years} {$yearWord} {$months} {$monthWord}" . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
+
         if ($months > 3) {
             return "{$months} {$monthWord}" . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
-        if ($months <= 3 && $months != 0) {
+
+        if ($months <= 3 && 0 != $months) {
             $monthString = "{$months} {$monthWord}";
-            $dayString = $days != 0 ? " {$days} {$dayWord}" : "";
+            $dayString   = 0 != $days ? " {$days} {$dayWord}" : '';
+
             return $monthString . $dayString . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
+
         if ($days > 3) {
             return "{$days} {$dayWord}" . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
-        if ($days <= 3 && $days != 0) {
-            if ($days == 1 && $hours == 0) return $this->text->e('вчера');
-            $dayString = "{$days} {$dayWord}";
-            $hourString = $hours != 0 ? " {$hours} {$hourWord}" : "";
+
+        if ($days <= 3 && 0 != $days) {
+            if (1 == $days && 0 == $hours) {
+                return $this->text->e('вчера');
+            }
+            $dayString  = "{$days} {$dayWord}";
+            $hourString = 0 != $hours ? " {$hours} {$hourWord}" : '';
+
             return $dayString . $hourString . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
+
         if ($hours > 3) {
             return "{$hours} {$hourWord}" . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
-        if ($hours <= 3 && $hours != 0) {
-            $hourString = "{$hours} {$hourWord}";
-            $minuteString = $minutes != 0 ? " {$minutes} {$minuteWord}" : "";
+
+        if ($hours <= 3 && 0 != $hours) {
+            $hourString   = "{$hours} {$hourWord}";
+            $minuteString = 0 != $minutes ? " {$minutes} {$minuteWord}" : '';
+
             return $hourString . $minuteString . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
+
         if ($minutes > 3) {
             return "{$minutes} {$minuteWord}" . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
-        if ($minutes <= 3 && $minutes != 0) {
+
+        if ($minutes <= 3 && 0 != $minutes) {
             $minuteString = "{$minutes} {$minuteWord}";
-            $secondString = $seconds != 0 ? " {$seconds} {$secondWord}" : "";
+            $secondString = 0 != $seconds ? " {$seconds} {$secondWord}" : '';
+
             return $minuteString . $secondString . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
-        if ($minutes == 0) {
+
+        if (0 == $minutes) {
             return "{$seconds} {$secondWord}" . ($addBackIn ? ' ' . $this->text->e('назад') : '');
         }
 
@@ -111,35 +133,44 @@ class Time {
     /**
      * @internal
      */
-    public function relative_time_string($timestamp) {
-        $now = new DateTime();
+    public function relative_time_string($timestamp)
+    {
+        $now           = new DateTime();
         $timestampDate = new DateTime();
         $timestampDate->setTimestamp($timestamp);
         $interval = $now->diff($timestampDate);
-    
+
         $years   = $interval->y;
         $months  = $interval->m;
         $days    = $interval->d;
         $hours   = $interval->h;
         $minutes = $interval->i;
         $seconds = $interval->s;
-    
+
         $relative_time_string = sprintf(
-            "%d years %d months %d days %d hours %d minutes %d seconds ago",
-            $years, $months, $days, $hours, $minutes, $seconds
+            '%d years %d months %d days %d hours %d minutes %d seconds ago',
+            $years,
+            $months,
+            $days,
+            $hours,
+            $minutes,
+            $seconds
         );
-    
+
         return $relative_time_string;
     }
 
-    public function DateTimeToTimestamp($datetime) {
+    public function DateTimeToTimestamp($datetime)
+    {
         $datetime = new DateTime($datetime);
+
         return $datetime->getTimestamp();
     }
 
-    public function convertMySQLDateTimeToHumanReadableDateTime(string $dateTime): string {
-        $dateTime = date_create_from_format('Y-m-d H:i:s', $dateTime);
-        $lang = $this->text->getCurrentLanguage();
+    public function convertMySQLDateTimeToHumanReadableDateTime(string $dateTime): string
+    {
+        $dateTime   = date_create_from_format('Y-m-d H:i:s', $dateTime);
+        $lang       = $this->text->getCurrentLanguage();
         $dateFormat = match($lang) {
             'ru_RU' => 'd MMMM Y',
             'en_US' => 'MMMM d, Y',
@@ -150,7 +181,7 @@ class Time {
             'en_US' => 'h:i:s A',
             default => 'H:i:s'
         };
-        
+
         $formatter = new IntlDateFormatter(
             $this->text->getCurrentLanguage(),
             IntlDateFormatter::FULL,
@@ -166,34 +197,43 @@ class Time {
         return $formattedDate . ' ' . $this->text->e('в') . ' ' . $formattedTime;
     }
 
-    public function getServerTimezone(): string {
+    public function getServerTimezone(): string
+    {
         $zone = date_default_timezone_get();
-        if ($zone == 'Europe/Moscow') return 'MSK';
+
+        if ('Europe/Moscow' == $zone) {
+            return 'MSK';
+        }
+
         return $zone;
     }
 
     /**
      * Method to get time difference between two timestamps.
      */
-    public function getTimeDiff($timestamp1, $timestamp2) {
+    public function getTimeDiff($timestamp1, $timestamp2)
+    {
         return abs($timestamp1 - $timestamp2);
     }
 
-    public function getTimestampFromDatetime(string $datetime) {
+    public function getTimestampFromDatetime(string $datetime)
+    {
         $datetime = new DateTime($datetime);
+
         return $datetime->getTimestamp();
     }
-      
+
     /**
      * Method to translate timestamp into readable time.
      * Takes into account regional peculiarities in writing time.
      */
-    public function getReadableTime(int $timestamp): string {
+    public function getReadableTime(int $timestamp): string
+    {
         $datetime = new DateTime("@$timestamp");
 
         return match($this->text->getCurrentLanguage()) {
-            "ru_RU" => $datetime->format('d.m.Y H:i:s'),
-            "en_US" => $datetime->format('m/d/Y h:i:s A'),
+            'ru_RU' => $datetime->format('d.m.Y H:i:s'),
+            'en_US' => $datetime->format('m/d/Y h:i:s A'),
             default => $datetime->format('m/d/Y h:i:s A'),
         };
     }
@@ -203,29 +243,31 @@ class Time {
      * months, and days.
      * The language of this string is determined by the user's settings.
      */
-    public function getShortRelativeTime(int $timestamp): string {
+    public function getShortRelativeTime(int $timestamp): string
+    {
         $lang = $this->text->getCurrentLanguage();
 
-        if ($lang == 'ru_RU') {
+        if ('ru_RU' == $lang) {
             return $this->getShortRelativeTimeRussian($timestamp);
-        } elseif ($lang == 'en_US') {
+        } elseif ('en_US' == $lang) {
             return $this->getShortRelativeTimeEnglish($timestamp);
-        } else {
-            // return $this->getRelativeTimeEnglish($timestamp, false);
         }
+        // return $this->getRelativeTimeEnglish($timestamp, false);
+
     }
-    
+
     /**
      * The function outputs a relative time string that includes years,
      * months, and days.
      * The language of this string is determined by the user's settings.
      */
-    public function getRelativeTime(int $timestamp): string {
+    public function getRelativeTime(int $timestamp): string
+    {
         $lang = $this->text->getCurrentLanguage();
 
-        if ($lang == 'ru_RU') {
+        if ('ru_RU' == $lang) {
             return $this->getRelativeTimeRussian($timestamp);
-        } elseif ($lang == 'en_US') {
+        } elseif ('en_US' == $lang) {
             return $this->getRelativeTimeEnglish($timestamp);
         }
     }
@@ -233,30 +275,31 @@ class Time {
     /**
      * Calculates how much time has passed
      * since the specified timestamp in other time units.
-     * 
+     *
      * NOTE: time values are isolated from each other, they
      * display a COMPLETE representation of the time stamp
      * diffrence in diffrent .
-     * 
-     * @param int $timestamp Required. The timestamp.
+     *
+     * @param  int   $timestamp Required. The timestamp.
      * @return array $diff The time diffrence. {
-     * @type int $diff['seconds']
-     * @type int $diff['minutes']
-     * @type int $diff['hours']
-     * @type int $diff['days']
-     * @type int $diff['months']
-     * }
+     * @type   int   $diff['seconds']
+     * @type   int   $diff['minutes']
+     * @type   int   $diff['hours']
+     * @type   int   $diff['days']
+     * @type   int   $diff['months']
+     *                         }
      */
-    public function getTimestampsDifference(int $timestamp): array {
+    public function getTimestampsDifference(int $timestamp): array
+    {
         $firstDateTime = new DateTime();
         $firstDateTime->setTimestamp($timestamp);
 
         $secondDateTime = new DateTime();
-        $diff = $secondDateTime->getTimestamp() - $timestamp; //diff in seconds.
+        $diff           = $secondDateTime->getTimestamp() - $timestamp; //diff in seconds.
 
-        $months = 0;
-        $days = 0;
-        $hours = 0;
+        $months  = 0;
+        $days    = 0;
+        $hours   = 0;
         $minutes = 0;
         $seconds = 0;
 
@@ -288,124 +331,155 @@ class Time {
 
         /**
          * Months.
-         * (30 days)
+         * (30 days).
          */
         if ($days >= 30) {
             $months = floor($days / 30);
         }
 
-        return array(
-            'seconds'   => $seconds,
-            'minutes'   => $minutes,
-            'hours'     => $hours,
-            'days'      => $days,
-            'months'    => $months
-        );
+        return [
+            'seconds' => $seconds,
+            'minutes' => $minutes,
+            'hours'   => $hours,
+            'days'    => $days,
+            'months'  => $months,
+        ];
     }
 
     /**
      * Converts seconds into human readable format.
      */
-    public function secondsToHumanReadable(int $seconds): string {
+    public function secondsToHumanReadable(int $seconds): string
+    {
         $lang = $this->text->getCurrentLanguage();
 
-        if ($lang == 'ru_RU') {
+        if ('ru_RU' == $lang) {
             return $this->secondsToHumanReadableRussian($seconds);
-        } elseif ($lang == 'en_US') {
-            return $this->secondsToHumanReadableEnglish($seconds);
-        } else {
+        } elseif ('en_US' == $lang) {
             return $this->secondsToHumanReadableEnglish($seconds);
         }
+
+        return $this->secondsToHumanReadableEnglish($seconds);
+
     }
 
     /**
      * Return current timestamp in console format.
      */
-    public static function consoleTimestamp() {
+    public static function consoleTimestamp()
+    {
         return '[' . date('Y-m-d H:i:s') . ']';
     }
 
-    private function secondsToHumanReadableRussian(int $seconds): string {
-        $days = intval($seconds / 86400);
-        $remainingHours = intval(($seconds % 86400) / 3600);
+    private function secondsToHumanReadableRussian(int $seconds): string
+    {
+        $days             = intval($seconds / 86400);
+        $remainingHours   = intval(($seconds % 86400) / 3600);
         $remainingMinutes = intval(($seconds % 3600) / 60);
         $remainingSeconds = $seconds % 60;
-        
-        $dayWord = $this->declension($days, array('день', 'дня', 'дней'));
-        $hourWord = $this->declension($remainingHours, array('час', 'часа', 'часов'));
-        $minuteWord = $this->declension($remainingMinutes, array('минута', 'минуты', 'минут'));
-        $secondWord = $this->declension($remainingSeconds, array('секунда', 'секунды', 'секунд'));
 
+        $dayWord    = $this->declension($days, ['день', 'дня', 'дней']);
+        $hourWord   = $this->declension($remainingHours, ['час', 'часа', 'часов']);
+        $minuteWord = $this->declension($remainingMinutes, ['минута', 'минуты', 'минут']);
+        $secondWord = $this->declension($remainingSeconds, ['секунда', 'секунды', 'секунд']);
 
         if ($days >= 1) {
-            if ($days > 3) return "{$days} {$dayWord}";
-            else return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
+            if ($days > 3) {
+                return "{$days} {$dayWord}";
+            }
+
+            return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
         }
+
         if ($remainingHours >= 1) {
-            if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
-            else if ($remainingMinutes == 0) return "{$remainingHours} {$hourWord}";
-            else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
+            if ($remainingHours > 3) {
+                return "{$remainingHours} {$hourWord}";
+            } elseif (0 == $remainingMinutes) {
+                return "{$remainingHours} {$hourWord}";
+            }
+
+            return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
         }
+
         if ($remainingMinutes >= 1) {
-            if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
-            else if ($remainingSeconds == 0) return "{$remainingMinutes} {$minuteWord}";
-            else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
+            if ($remainingMinutes > 15) {
+                return "{$remainingMinutes} {$minuteWord}";
+            } elseif (0 == $remainingSeconds) {
+                return "{$remainingMinutes} {$minuteWord}";
+            }
+
+            return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
         }
-        
-        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : "0 секунд";
+
+        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : '0 секунд';
     }
-    
 
-    private function secondsToHumanReadableEnglish(int $seconds): string {
-        $days = intval($seconds / 86400);
-        $remainingHours = intval(($seconds % 86400) / 3600);
+    private function secondsToHumanReadableEnglish(int $seconds): string
+    {
+        $days             = intval($seconds / 86400);
+        $remainingHours   = intval(($seconds % 86400) / 3600);
         $remainingMinutes = intval(($seconds % 3600) / 60);
         $remainingSeconds = $seconds % 60;
-        
-        $dayWord = $this->declension($days, array('day', 'days', 'days'));
-        $hourWord = $this->declension($remainingHours, array('hour', 'hours', 'hours'));
-        $minuteWord = $this->declension($remainingMinutes, array('minute', 'minutes', 'minutes'));
-        $secondWord = $this->declension($remainingSeconds, array('second', 'seconds', 'seconds'));
 
+        $dayWord    = $this->declension($days, ['day', 'days', 'days']);
+        $hourWord   = $this->declension($remainingHours, ['hour', 'hours', 'hours']);
+        $minuteWord = $this->declension($remainingMinutes, ['minute', 'minutes', 'minutes']);
+        $secondWord = $this->declension($remainingSeconds, ['second', 'seconds', 'seconds']);
 
         if ($days >= 1) {
-            if ($days > 3) return "{$days} {$dayWord}";
-            else return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
+            if ($days > 3) {
+                return "{$days} {$dayWord}";
+            }
+
+            return "{$days} {$dayWord} {$remainingHours} {$hourWord}";
         }
+
         if ($remainingHours >= 1) {
-            if ($remainingHours > 3) return "{$remainingHours} {$hourWord}";
-            else if ($remainingMinutes == 0) return "{$remainingHours} {$hourWord}";
-            else return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
+            if ($remainingHours > 3) {
+                return "{$remainingHours} {$hourWord}";
+            } elseif (0 == $remainingMinutes) {
+                return "{$remainingHours} {$hourWord}";
+            }
+
+            return "{$remainingHours} {$hourWord} {$remainingMinutes} {$minuteWord}";
         }
+
         if ($remainingMinutes >= 1) {
-            if ($remainingMinutes > 15) return "{$remainingMinutes} {$minuteWord}";
-            else if ($remainingSeconds == 0) return "{$remainingMinutes} {$minuteWord}";
-            else return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
+            if ($remainingMinutes > 15) {
+                return "{$remainingMinutes} {$minuteWord}";
+            } elseif (0 == $remainingSeconds) {
+                return "{$remainingMinutes} {$minuteWord}";
+            }
+
+            return "{$remainingMinutes} {$minuteWord} {$remainingSeconds} {$secondWord}";
         }
-        
-        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : "0 seconds";
+
+        return $remainingSeconds > 1 ? "{$remainingSeconds} {$secondWord}" : '0 seconds';
     }
 
     /**
-     * hours, minutes
+     * hours, minutes.
      */
-    private function getRelativeTimeRussian(int $timestamp): string {
-        if ($timestamp == 0) return 'никогда';
-        $now  = time();
-        $diff = date_diff(new DateTime('@' . $timestamp), new DateTime('@' . $now));
+    private function getRelativeTimeRussian(int $timestamp): string
+    {
+        if (0 == $timestamp) {
+            return 'никогда';
+        }
+        $now     = time();
+        $diff    = date_diff(new DateTime('@' . $timestamp), new DateTime('@' . $now));
         $hours   = $diff->h;
         $minutes = $diff->i;
-    
+
         $result = '';
-    
+
         if ($hours > 0) {
-            $result .= $hours . ' ' . $this->declension($hours, array('час', 'часа', 'часов')) . ' ';
+            $result .= $hours . ' ' . $this->declension($hours, ['час', 'часа', 'часов']) . ' ';
         }
-    
+
         if ($minutes > 0) {
-            $result .= $minutes . ' ' . $this->declension($minutes, array('минута', 'минуты', 'минут')) . ' ';
+            $result .= $minutes . ' ' . $this->declension($minutes, ['минута', 'минуты', 'минут']) . ' ';
         }
-    
+
         /**
          * Check if the timestamp is in the future or in the past.
          */
@@ -415,33 +489,40 @@ class Time {
             $result = $result . 'назад';
         }
 
-        if ($result == 'назад') return 'только что';
+        if ('назад' == $result) {
+            return 'только что';
+        }
 
-        if ($result == '1 минута назад') return 'минуту назад';
-    
+        if ('1 минута назад' == $result) {
+            return 'минуту назад';
+        }
+
         return $result;
     }
 
     /**
-     * hours, minutes
+     * hours, minutes.
      */
-    private function getRelativeTimeEnglish(int $timestamp): string {
-        if ($timestamp == 0) return 'never';
-        $now  = time();
-        $diff = date_diff(new DateTime('@' . $timestamp), new DateTime('@' . $now));
+    private function getRelativeTimeEnglish(int $timestamp): string
+    {
+        if (0 == $timestamp) {
+            return 'never';
+        }
+        $now     = time();
+        $diff    = date_diff(new DateTime('@' . $timestamp), new DateTime('@' . $now));
         $hours   = $diff->h;
         $minutes = $diff->i;
-    
+
         $result = '';
-    
+
         if ($hours > 0) {
             $result .= $hours . ' hour' . ($hours > 1 ? 's ' : ' ');
         }
-    
+
         if ($minutes > 0) {
             $result .= $minutes . ' minute' . ($minutes > 1 ? 's ' : ' ');
         }
-    
+
         /**
          * Check if the timestamp is in the future or in the past.
          */
@@ -450,26 +531,35 @@ class Time {
         } else {
             $result = $result . 'ago';
         }
-        
-        if ($result == 'ago') return 'just now';
+
+        if ('ago' == $result) {
+            return 'just now';
+        }
 
         return $result;
     }
-    
-    
 
-    private function getShortRelativeTimeRussian(int $timestamp): string {
+    private function getShortRelativeTimeRussian(int $timestamp): string
+    {
         $now    = time();
         $diff   = date_diff(new DateTime('@' . $timestamp), new DateTime('@' . $now));
         $years  = $diff->y;
         $months = $diff->m;
         $days   = $diff->d;
-    
+
         $result = '';
 
-        if ($years > 0) $result .= $years . ' ' . $this->declension($years, array('год', 'года', 'лет')) . ' ';
-        if ($months > 0) $result .= $months . ' ' . $this->declension($months, array('месяц', 'месяца', 'месяцев')) . ' ';
-        if ($days > 0) $result .= $days . ' ' . $this->declension($days, array('день', 'дня', 'дней')) . ' ';
+        if ($years > 0) {
+            $result .= $years . ' ' . $this->declension($years, ['год', 'года', 'лет']) . ' ';
+        }
+
+        if ($months > 0) {
+            $result .= $months . ' ' . $this->declension($months, ['месяц', 'месяца', 'месяцев']) . ' ';
+        }
+
+        if ($days > 0) {
+            $result .= $days . ' ' . $this->declension($days, ['день', 'дня', 'дней']) . ' ';
+        }
 
         /**
          * Check if the timestamp is in the future or in the past.
@@ -479,11 +569,12 @@ class Time {
         } else {
             $result = $result . 'назад';
         }
-    
+
         return $result;
     }
 
-    private function getShortRelativeTimeEnglish(int $timestamp): string {
+    private function getShortRelativeTimeEnglish(int $timestamp): string
+    {
         $now    = time();
         $diff   = date_diff(new DateTime('@' . $timestamp), new DateTime('@' . $now));
         $years  = $diff->y;
@@ -492,9 +583,17 @@ class Time {
 
         $result = '';
 
-        if ($years > 0) $result .= $years . ' year' . ($years > 1 ? 's ' : ' ');
-        if ($months > 0) $result .= $months . ' month' . ($months > 1 ? 's ' : ' ');
-        if ($days > 0) $result .= $days . ' day' . ($days > 1 ? 's ' : ' ');
+        if ($years > 0) {
+            $result .= $years . ' year' . ($years > 1 ? 's ' : ' ');
+        }
+
+        if ($months > 0) {
+            $result .= $months . ' month' . ($months > 1 ? 's ' : ' ');
+        }
+
+        if ($days > 0) {
+            $result .= $days . ' day' . ($days > 1 ? 's ' : ' ');
+        }
 
         /**
          * Check if the timestamp is in the future or in the past.
@@ -508,12 +607,22 @@ class Time {
         return $result;
     }
 
-
-    private function declension($number, $words) {
+    private function declension($number, $words)
+    {
         $number = abs($number);
-        if ($number > 20) $number %= 10;
-        if ($number == 1) return $words[0];
-        if ($number >= 2 && $number <= 4) return $words[1];
+
+        if ($number > 20) {
+            $number %= 10;
+        }
+
+        if (1 == $number) {
+            return $words[0];
+        }
+
+        if ($number >= 2 && $number <= 4) {
+            return $words[1];
+        }
+
         return $words[2];
     }
 }

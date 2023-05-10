@@ -2,7 +2,6 @@
 
 namespace PackBot;
 
-
-class DnsResponse {
-
+class DnsResponse
+{
 }

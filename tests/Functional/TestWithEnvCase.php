@@ -8,32 +8,32 @@ use Longman\TelegramBot\Telegram;
 use PackBot\Environment;
 use PackBot\PackDB;
 use PackBot\Path;
-use PackBot\Tests\Functional\TestHelpers;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Base class for function command tests.
  */
-abstract class TestWithEnvCase extends TestCase {
-
+abstract class TestWithEnvCase extends TestCase
+{
     public string $dummyApiKey = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11';
 
     protected Telegram $telegram;
 
     protected Client $client;
 
-    protected array $credentials = array();
+    protected array $credentials = [];
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
 
         defined('TESTSUITE') || define('TESTSUITE', true);
 
-        $this->credentials = array(
+        $this->credentials = [
             'host'     => Environment::var('db_host'),
             'user'     => Environment::var('db_user'),
             'password' => Environment::var('db_password'),
             'database' => Environment::var('db_name'),
-        );
+        ];
 
         try {
             PackDB::connect();
@@ -45,9 +45,9 @@ abstract class TestWithEnvCase extends TestCase {
 
         $telegram = new Telegram($this->dummyApiKey, 'testbot');
         $telegram->enableMySql($this->credentials);
-        $commandsPaths = array(
-            Path::toRoot() . '/Commands'
-        );
+        $commandsPaths = [
+            Path::toRoot() . '/Commands',
+        ];
 
         $telegram->addCommandsPaths($commandsPaths);
         $this->telegram = $telegram;
@@ -59,7 +59,8 @@ abstract class TestWithEnvCase extends TestCase {
         Request::setClient($this->client);
     }
 
-    public function tearDown(): void {
+    public function tearDown(): void
+    {
         TestHelpers::emptyDB($this->credentials);
     }
 }

@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class SitemapParserException extends \Exception {
-
+class SitemapParserException extends \Exception
+{
 }

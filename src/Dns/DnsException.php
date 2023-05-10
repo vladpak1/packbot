@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class DnsException extends \Exception {
-
+class DnsException extends \Exception
+{
 }

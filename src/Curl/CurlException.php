@@ -1,5 +1,7 @@
 <?php
+
 namespace PackBot;
 
-
-class CurlException extends \Exception {}
+class CurlException extends \Exception
+{
+}

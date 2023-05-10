@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class WorkerException extends \Exception {
-    
+class WorkerException extends \Exception
+{
 }

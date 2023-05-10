@@ -2,10 +2,10 @@
 
 namespace PackBot;
 
-class HttpDescription {
-
-    public static array $codesDescriptionsRU = array(
-        0 => 'Отсутствие ответа. Это может означать много чего. Возможно, такого домена вообще не существует.',
+class HttpDescription
+{
+    public static array $codesDescriptionsRU = [
+        0   => 'Отсутствие ответа. Это может означать много чего. Возможно, такого домена вообще не существует.',
         100 => 'Продолжайте. Это значит, что сервер принял запрос и клиент может продолжать отправлять тело запроса.',
         101 => 'Протокол обмена данными обновлен. Это значит, что сервер принял запрос и клиент должен переключиться на протокол, указанный в заголовке Upgrade.',
         102 => 'Процесс продолжается. Это значит, что сервер принял запрос, но еще не завершил его обработку.',
@@ -67,10 +67,10 @@ class HttpDescription {
         506 => 'Вариант тоже проводит. Это значит, что сервер не может обработать запрос из-за того, что ожидается какое-то условие.',
         507 => 'Переполнение хранилища. Это значит, что сервер не может обработать запрос из-за того, что ожидается какое-то условие.',
         508 => 'Зацикленный запрос. Это значит, что сервер не может обработать запрос из-за того, что ожидается какое-то условие.',
-    );
+    ];
 
-    public static array $codesDescriptionsEN = array(
-        0 => 'No response. This means that the server has not yet returned any data.',
+    public static array $codesDescriptionsEN = [
+        0   => 'No response. This means that the server has not yet returned any data.',
         100 => 'Continue. This means that the server has received the request headers, and that the client should proceed to send the request body (in the case of a request for which a body needs to be sent; for example, a POST request).',
         101 => 'Switching Protocols. This means the requester has asked the server to switch protocols and the server is acknowledging that it will do so.',
         102 => 'Processing. This means the server has received and is processing the request, but no response is available yet.',
@@ -135,24 +135,21 @@ class HttpDescription {
         508 => 'Loop Detected. This means that the server terminated an operation because it encountered an infinite loop while processing a request with "Depth: infinity". This status indicates that the entire operation failed.',
         510 => 'Not Extended. This means that further extensions to the request are required for the server to fulfil it.',
         511 => 'Network Authentication Required. This means that the client needs to authenticate to gain network access.',
-    );
+    ];
 
     /**
      * Returns a string with a textual description of what this or that response code means.
-     * @param int $code
      * @param string $lang Language code. Currently supported: en_US, ru_RU
      */
-    public static function getCodeDescription(int $code, string $lang): string {
+    public static function getCodeDescription(int $code, string $lang): string
+    {
         switch ($lang) {
             case 'en_US':
                 return self::$codesDescriptionsEN[$code] ?? 'Unknown';
             case 'ru_RU':
                 return self::$codesDescriptionsRU[$code] ?? 'Неизвестно';
             default:
-            return self::$codesDescriptionsEN[$code] ?? 'Unknown';
+                return self::$codesDescriptionsEN[$code] ?? 'Unknown';
         }
     }
-
-
-
 }

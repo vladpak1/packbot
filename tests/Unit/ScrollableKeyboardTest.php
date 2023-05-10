@@ -5,9 +5,10 @@ namespace PackBot\Tests\Unit;
 use PackBot\ScrollableKeyboard;
 use PHPUnit\Framework\TestCase;
 
-class ScrollableKeyboardTest extends TestCase {
-
-    public function testHasNextPages() {
+class ScrollableKeyboardTest extends TestCase
+{
+    public function testHasNextPages()
+    {
         $testItems = TestHelpers::getTestItems(10);
         $keyboard  = (new ScrollableKeyboard())
         ->addEntries($testItems)
@@ -16,7 +17,8 @@ class ScrollableKeyboardTest extends TestCase {
         $this->assertFalse($keyboard->hasNextPage());
     }
 
-    public function testHasNextPagesWithMoreItems() {
+    public function testHasNextPagesWithMoreItems()
+    {
         $testItems = TestHelpers::getTestItems(10);
         $keyboard  = (new ScrollableKeyboard())
         ->addEntries($testItems)
@@ -25,7 +27,8 @@ class ScrollableKeyboardTest extends TestCase {
         $this->assertTrue($keyboard->hasNextPage());
     }
 
-    public function testHasPreviousPages() {
+    public function testHasPreviousPages()
+    {
         $testItems = TestHelpers::getTestItems(10);
         $keyboard  = (new ScrollableKeyboard())
         ->addEntries($testItems)
@@ -34,7 +37,8 @@ class ScrollableKeyboardTest extends TestCase {
         $this->assertFalse($keyboard->hasPreviousPage());
     }
 
-    public function testIteratingThroughPages() {
+    public function testIteratingThroughPages()
+    {
         $testItems = TestHelpers::getTestItems(15);
         $keyboard  = (new ScrollableKeyboard())
         ->addEntries($testItems)
@@ -51,10 +55,11 @@ class ScrollableKeyboardTest extends TestCase {
         $this->assertFalse($keyboard->hasPreviousPage());
     }
 
-    public function testConstructionKeyboard() {
-        $testItems = TestHelpers::getTestItems(15);
+    public function testConstructionKeyboard()
+    {
+        $testItems    = TestHelpers::getTestItems(15);
         $screenItemID = random_int(1, 1000);
-        $keyboard  = (new ScrollableKeyboard())
+        $keyboard     = (new ScrollableKeyboard())
         ->addEntries($testItems)
         ->setPerScreen(5) //should be 3 pages
         ->setScreenItemID($screenItemID)
@@ -68,7 +73,7 @@ class ScrollableKeyboardTest extends TestCase {
          * @var Longman\TelegramBot\Entities\InlineKeyboardButton
          */
         $firstButton = $raw['inline_keyboard'][0][0];
-        $this->assertEquals("testScreen_listItem_6", $firstButton->getCallbackData());
+        $this->assertEquals('testScreen_listItem_6', $firstButton->getCallbackData());
 
         /**
          * @var Longman\TelegramBot\Entities\InlineKeyboardButton
@@ -77,9 +82,9 @@ class ScrollableKeyboardTest extends TestCase {
         $this->assertEquals("testScreen_listAction_{$screenItemID}_nextPage_2", $lastButton->getCallbackData());
     }
 
-    public function testEmptyKeyboard() {
+    public function testEmptyKeyboard()
+    {
         $this->expectException(\PackBot\KeyboardException::class);
         $keyboard = (new ScrollableKeyboard())->getKeyboard();
     }
-
 }

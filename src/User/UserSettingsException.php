@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class UserSettingsException extends \Exception {
-
+class UserSettingsException extends \Exception
+{
 }

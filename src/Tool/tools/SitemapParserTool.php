@@ -2,10 +2,9 @@
 
 namespace PackBot;
 
-
-class SitemapParserTool implements ToolInterface {
-
-    protected array $domains = array();
+class SitemapParserTool implements ToolInterface
+{
+    protected array $domains = [];
 
     protected Text $text;
 
@@ -15,30 +14,38 @@ class SitemapParserTool implements ToolInterface {
 
     protected string $toolName = 'SitemapParserTool';
 
-    public function __construct(array|string $domains) {
-        if (is_string($domains)) $domains = array($domains);
+    public function __construct(array|string $domains)
+    {
+        if (is_string($domains)) {
+            $domains = [$domains];
+        }
 
         $this->text = new Text();
 
         $this->toolSettings = Environment::var('tools_settings')[$this->toolName];
-        if ($this->toolSettings['enabled'] === false) throw new ToolException($this->toolName . ' is temporarily disabled.');
 
+        if (false === $this->toolSettings['enabled']) {
+            throw new ToolException($this->toolName . ' is temporarily disabled.');
+        }
 
         $this->domains = $domains;
         $this->prepareResults();
     }
 
-    public function getResult(): array {
+    public function getResult(): array
+    {
         return $this->result;
     }
 
-    protected function prepareResults() {
+    protected function prepareResults()
+    {
         foreach ($this->domains as $domain) {
             $this->result[$domain] = $this->executeParser($domain);
         }
     }
 
-    protected function executeParser(string $domain): array {
+    protected function executeParser(string $domain): array
+    {
         try {
             $sitemapParser = new SitemapParser($domain);
             $response      = $sitemapParser

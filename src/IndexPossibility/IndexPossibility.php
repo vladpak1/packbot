@@ -7,9 +7,8 @@ use RobotsTxtParser\RobotsTxtValidator;
 use KubAT\PhpSimple\HtmlDomParser;
 use Throwable;
 
-class IndexPossibility {
-
-
+class IndexPossibility
+{
     protected string $domain;
 
     /**
@@ -34,107 +33,136 @@ class IndexPossibility {
     /**
      * Class constructor.
      */
-    public function __construct(string $domain) {
+    public function __construct(string $domain)
+    {
         $this->domain = $domain;
     }
 
     /**
      * Execute the check.
      */
-    public function execute(): self {
-        if ($this->isExecuted) return $this;
+    public function execute(): self
+    {
+        if ($this->isExecuted) {
+            return $this;
+        }
         $this->getEffectiveUrl();
         $this->getRobotsTxt();
         $this->realExecute();
         $this->isExecuted = true;
+
         return $this;
     }
-    
+
     /**
      * Set useragent for robots.txt parsing.
      */
-    public function actAs(string $useragent = '*'): self {
+    public function actAs(string $useragent = '*'): self
+    {
         $this->useragent = $useragent;
+
         return $this;
     }
 
     /**
      * Get response as IndexPossibilityResponse object.
      */
-    public function getResponse(): IndexPossibilityResponse {
-        if (!$this->isExecuted) throw new IndexPossibilityException('Cannot get response before execution.');
+    public function getResponse(): IndexPossibilityResponse
+    {
+        if (!$this->isExecuted) {
+            throw new IndexPossibilityException('Cannot get response before execution.');
+        }
+
         return $this->response;
     }
 
-    protected function realExecute() {
-        $parsedRobots = $this->parseRobotsTxt();
-        $this->response = new IndexPossibilityResponse(array_merge($parsedRobots, array(
+    protected function realExecute()
+    {
+        $parsedRobots   = $this->parseRobotsTxt();
+        $this->response = new IndexPossibilityResponse(array_merge($parsedRobots, [
             'effectiveUrl' => $this->effectiveUrl,
-        )));
+        ]));
     }
 
-    protected function parseRobotsTxt(): array {
+    protected function parseRobotsTxt(): array
+    {
         try {
-            $parser = new RobotsTxtParser($this->robots);
+            $parser    = new RobotsTxtParser($this->robots);
             $validator = new RobotsTxtValidator($parser->getRules());
 
-            return array(
+            return [
                 // 'rules' => $parser->getRules(),
                 'indexBlockByRobots' => $validator->isUrlDisallow($this->effectiveUrl, $this->useragent),
-                'indexBlockByPage' => $this->isThereNoIndex(),
-            );
+                'indexBlockByPage'   => $this->isThereNoIndex(),
+            ];
 
-       } catch (Throwable $e) {
-           throw new IndexPossibilityException('Cannot parse robots.txt: ' . $e->getMessage());
-       }
+        } catch (Throwable $e) {
+            throw new IndexPossibilityException('Cannot parse robots.txt: ' . $e->getMessage());
+        }
     }
 
     /**
      * Check if page has noindex meta tag.
      */
-    protected function isThereNoIndex(): bool {
-        $curl = new Curl($this->effectiveUrl);
+    protected function isThereNoIndex(): bool
+    {
+        $curl     = new Curl($this->effectiveUrl);
         $response = $curl
                         ->setTimeout(20)
                         ->execute()
                         ->getResponse();
 
-        if (!$response->isOK() && $response->getCode() != 404) throw new IndexPossibilityException('Cannot get page (during in-page check) for ' . $this->effectiveUrl . ': ' . $response->getCurlError());
+        if (!$response->isOK() && 404 != $response->getCode()) {
+            throw new IndexPossibilityException('Cannot get page (during in-page check) for ' . $this->effectiveUrl . ': ' . $response->getCurlError());
+        }
 
-        if ($response->getCode() == 404) return true;
+        if (404 == $response->getCode()) {
+            return true;
+        }
 
         $dom = HtmlDomParser::str_get_html($response->getBody());
 
         $noindex = $dom->find('meta[name="robots"]', 0);
-        if (empty($noindex)) return false;
+
+        if (empty($noindex)) {
+            return false;
+        }
         $content = $noindex->content;
 
-        if (empty($content)) return false;
-        
+        if (empty($content)) {
+            return false;
+        }
+
         return str_contains($content, 'noindex') ? true : false;
     }
 
-    protected function getRobotsTxt() {
+    protected function getRobotsTxt()
+    {
         $robotsTxtUrl = Url::getDomain($this->effectiveUrl) . '/robots.txt';
-        $curl = new Curl($robotsTxtUrl);
-        $response = $curl
+        $curl         = new Curl($robotsTxtUrl);
+        $response     = $curl
                         ->setTimeout(20)
                         ->execute()
                         ->getResponse();
+
         if ($response->isOK()) {
             $this->robots = $response->getBody();
         }
     }
 
-    protected function getEffectiveUrl() {
+    protected function getEffectiveUrl()
+    {
         try {
-            $curl = new Curl($this->domain);
+            $curl     = new Curl($this->domain);
             $response = $curl
                             ->setFollowLocation(true)
                             ->setTimeout(20)
                             ->execute()
                             ->getResponse();
-            if (!$response->isOK() && $response->getCode() != 404) throw new IndexPossibilityException('Cannot get effective URL for (1) ' . $this->domain . ': ' . $response->getCurlError());
+
+            if (!$response->isOK() && 404 != $response->getCode()) {
+                throw new IndexPossibilityException('Cannot get effective URL for (1) ' . $this->domain . ': ' . $response->getCurlError());
+            }
             $this->effectiveUrl = $response->getEffectiveUrl();
         } catch (CurlException $e) {
             throw new IndexPossibilityException('Cannot get effective URL for (2) ' . $this->domain . ': ' . $e->getMessage());

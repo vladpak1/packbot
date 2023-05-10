@@ -1,6 +1,7 @@
 <?php
+
 namespace PackBot;
 
-class ScreenException extends \Exception {
-
+class ScreenException extends \Exception
+{
 }

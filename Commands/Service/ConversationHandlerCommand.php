@@ -1,6 +1,6 @@
 <?php
 /**
- * Callback query command
+ * Callback query command.
  *
  * This command handles all callback queries sent via inline keyboard buttons.
  *
@@ -32,9 +32,8 @@ class ConversationHandlerCommand extends SystemCommand
     protected $version = '1.2.0';
 
     /**
-     * Main command execution
+     * Main command execution.
      *
-     * @return ServerResponse
      * @throws \Exception
      */
     public function execute(): ServerResponse

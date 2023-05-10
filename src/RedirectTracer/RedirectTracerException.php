@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class RedirectTracerException extends \Exception {
-
+class RedirectTracerException extends \Exception
+{
 }

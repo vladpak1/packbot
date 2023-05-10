@@ -2,6 +2,6 @@
 
 namespace PackBot;
 
-class IndexPossibilityException extends \Exception {
-
+class IndexPossibilityException extends \Exception
+{
 }
