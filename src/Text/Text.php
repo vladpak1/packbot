@@ -48,7 +48,7 @@ class Text
 
     public function e(string $text): string
     {
-        return $this->translate($text);
+        return '' === $text ? '' : $this->translate($text);
     }
 
     public function sprintf(string $text, ...$args): string
