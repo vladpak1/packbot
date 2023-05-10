@@ -45,6 +45,14 @@ class CloudflareChecker
     }
 
     /**
+     * Insert array of IP-ranges of Cloudflare network to be used for checking.
+     */
+    public function setRanges(array $ranges): void
+    {
+        $this->ranges = $ranges;
+    }
+
+    /**
      * Supports both IPv4 and IPv6.
      */
     protected function isValidIP(string $ip): bool
@@ -55,7 +63,7 @@ class CloudflareChecker
     protected function prepareRanges()
     {
         if (!empty($this->ranges)) {
-            throw new CloudflareCheckerException('Cloudflare ranges already prepared.');
+            return;
         }
 
         foreach ($this->rangesLinks as $link) {
