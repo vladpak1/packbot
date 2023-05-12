@@ -46,7 +46,9 @@
         "friendsofphp/php-cs-fixer": "^3.16"
     },
     "scripts": {
-        "test": "\"vendor/bin/phpunit\"",
-        "fix": "\"vendor/bin/php-cs-fixer\" fix --verbose --diff"
+        "test": "\"vendor/bin/phpunit\" --random-order",
+        "fix": "\"vendor/bin/php-cs-fixer\" fix --verbose --diff",
+        "coverage-win": "set \"XDEBUG_MODE=coverage\" && \"vendor\\bin\\phpunit\" --coverage-clover clover.xml",
+        "coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover clover.xml"
     }
 }

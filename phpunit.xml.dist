@@ -16,8 +16,8 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
 >   
-    <!-- Uncomment the following lines to check for coverage in the /src folder -->
-    <!-- <coverage processUncoveredFiles="true">
+
+    <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">src/</directory>
         </include>
@@ -26,7 +26,7 @@
             <html outputDirectory="build/coverage"/>
             <text outputFile="build/logs/coverage.txt"/>
         </report>
-    </coverage> -->
+    </coverage>
     <testsuites>
         <testsuite name="Application Test Suite">
             <directory>tests</directory>
