@@ -10,6 +10,9 @@ class DnsRecord extends Entity
 
     public function __construct(array $data)
     {
+        if (empty($data)) {
+            throw new DnsException('Cannot create DnsRecord: empty record data.');
+        }
         $this->data = $data;
         $this->cloudflareCheck();
     }
