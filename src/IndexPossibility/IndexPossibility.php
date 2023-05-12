@@ -35,6 +35,9 @@ class IndexPossibility
      */
     public function __construct(string $domain)
     {
+        if (empty($domain)) {
+            throw new \InvalidArgumentException('Domain cannot be empty.');
+        }
         $this->domain = $domain;
     }
 
