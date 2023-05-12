@@ -16,7 +16,7 @@ class MenuCommandTest extends CommandTestCase
         $userID     = $fakeUpdate->getMessage()->getFrom()->getId();
 
         UserSettings::setUserID($userID);
-        $settings = new UserSettings($userID);
+        $settings = new UserSettings();
         $settings->set('language', 'ru_RU');
 
         $this->client
@@ -55,7 +55,7 @@ class MenuCommandTest extends CommandTestCase
         $userID     = $fakeUpdate->getMessage()->getFrom()->getId();
 
         UserSettings::setUserID($userID);
-        $settings = new UserSettings($userID);
+        $settings = new UserSettings();
         $settings->set('language', 'en_US');
 
         $this->client
