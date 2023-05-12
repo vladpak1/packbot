@@ -18,10 +18,6 @@ class QRCodeWithLogo extends QRCode implements QRCodeInterface
 
     protected string $url;
 
-    /**
-     *
-     * @throws QRCodeException, InvalidLogoException
-     */
     public function __construct(string $url)
     {
         $this->url = $url;

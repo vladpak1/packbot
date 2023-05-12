@@ -27,7 +27,6 @@ final class QRCodeWithLogoColored extends QRCodeWithLogo implements QRCodeInterf
 
     public function render(): QRCodeImage
     {
-        parent::__construct($this->url);
 
         $tempLogo       = Image::make($this->logoPath);
         $dominantColors = ColorHelper::getMostCommonColors($tempLogo);
