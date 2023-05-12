@@ -1,12 +1,10 @@
 <?php
 
-namespace PackBot\Tests\Functional\Monitoring;
+namespace PackBot\Tests\Functional;
 
 use PackBot\IncidentStatistics;
 use PackBot\Site;
 use PackBot\SiteMonitoringDB;
-use PackBot\Tests\Functional\TestHelpers;
-use PackBot\Tests\Functional\TestWithEnvCase;
 
 /**
  * Base class for function command tests.

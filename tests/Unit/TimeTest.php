@@ -43,7 +43,7 @@ class TimeTest extends TestCase
         ->getMockBuilder(Text::class)
         ->disableOriginalConstructor()
         ->getMock();
-        
+
         $textMock
         ->method('getCurrentLanguage')
         ->willReturn('en_US');

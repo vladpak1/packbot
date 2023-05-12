@@ -29,4 +29,34 @@ class CurlTest extends TestCase
         $this->expectExceptionMessage('Cannot get response: curl request is not executed.');
         (new Curl('google.com'))->getResponse();
     }
+
+    public function testDoubleExecute()
+    {
+        $this->expectException(\PackBot\CurlException::class);
+        $this->expectExceptionMessage('Cannot execute curl request: curl request is already executed.');
+        $curl = new Curl('google.com');
+        $curl->execute();
+        $curl->execute();
+    }
+
+    public function testEmptyCurlError()
+    {
+        $this->assertEmpty((new Curl('google.com'))->getCurlError());
+    }
+
+    public function testCurlSettings()
+    {
+        $curl = new Curl('google.com');
+        $curl->setTimeout(1);
+        $curl->setFollowLocation(true);
+        $curl->setHeaders([
+            'User-Agent: NoPackBot',
+        ]);
+
+        $options = $curl->getOptions();
+
+        $this->assertEquals(1, $options['CURLOPT_TIMEOUT']);
+        $this->assertEquals(true, $options['CURLOPT_FOLLOWLOCATION']);
+        $this->assertEquals(['User-Agent: NoPackBot'], $options['CURLOPT_HTTPHEADER']);
+    }
 }
