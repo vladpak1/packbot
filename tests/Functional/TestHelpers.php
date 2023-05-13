@@ -27,7 +27,7 @@ class TestHelpers
 
         foreach ($tables as $table) {
             $pdo->exec('SET FOREIGN_KEY_CHECKS=0;');
-            $pdo->prepare('DELETE FROM `' . $table . '`;')->execute();
+            $pdo->prepare('TRUNCATE TABLE `' . $table . '`;')->execute();
             $pdo->exec('SET FOREIGN_KEY_CHECKS=1;');
         }
     }
