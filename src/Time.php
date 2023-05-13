@@ -135,6 +135,7 @@ class Time
      */
     public function relative_time_string($timestamp)
     {
+        $timestamp     = null === $timestamp ? time() : (int)$timestamp;
         $now           = new DateTime();
         $timestampDate = new DateTime();
         $timestampDate->setTimestamp($timestamp);
