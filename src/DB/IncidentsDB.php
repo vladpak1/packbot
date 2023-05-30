@@ -219,6 +219,12 @@ class IncidentsDB extends PackDB
         return $stmt->rowCount();
     }
 
+    public static function closeAnyActiveIncidentsForSite(int $siteID) {
+        $sql  = 'UPDATE incidents SET end_time = CURRENT_TIMESTAMP WHERE site_id = :site_id AND end_time IS NULL';
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute(['site_id' => $siteID]);
+    }
+
     protected static function getLastIncidentID(): int
     {
         $sql  = 'SELECT id FROM incidents ORDER BY id DESC LIMIT 1';
