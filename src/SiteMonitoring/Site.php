@@ -58,11 +58,6 @@ class Site implements \JsonSerializable
     public function setUpState()
     {
         SiteMonitoringDB::setSiteWorkingState($this->getID());
-
-        /**
-         * Workaround for the bug with unclosed incidents.
-         */
-        IncidentsDB::closeAnyActiveIncidentsForSite($this->getID());
     }
 
     public function getURL(): string
