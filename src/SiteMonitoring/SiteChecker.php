@@ -109,8 +109,8 @@ class SiteChecker
              * the site has been declared down.
              */
             if ($recheck && (200 !== $responseCode || $responseTime > $timeout)) {
-                echo 'Site is declared down. Rechecking after 5 seconds...' . PHP_EOL;
-                sleep(5);
+                echo 'Site is declared down. Rechecking after 2 seconds...' . PHP_EOL;
+                sleep(2);
 
                 /**
                  * Some sites don't support URL parameters,
