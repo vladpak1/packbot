@@ -9,7 +9,7 @@ use PDO;
  */
 class PackDB
 {
-    protected static PDO $pdo;
+    protected static ?PDO $pdo;
 
     public static function connect()
     {
@@ -32,6 +32,11 @@ class PackDB
             throw new EnvironmentException('Database connection failed: ' . $e->getMessage());
         }
 
+    }
+
+    public static function disconnect()
+    {
+        self::$pdo = null;
     }
 
     /**

@@ -30,6 +30,8 @@ class TestHelpers
             $pdo->prepare('TRUNCATE TABLE `' . $table . '`;')->execute();
             $pdo->exec('SET FOREIGN_KEY_CHECKS=1;');
         }
+
+        $pdo = null;
     }
 
     /**

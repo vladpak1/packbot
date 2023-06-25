@@ -62,5 +62,6 @@ abstract class TestWithEnvCase extends TestCase
     public function tearDown(): void
     {
         TestHelpers::emptyDB($this->credentials);
+        PackDB::disconnect();
     }
 }
