@@ -147,10 +147,6 @@ class Alert
 
                 $incident = new Incident($incidentID);
                 $incident->resolve();
-                /**
-                 * Workaround for the bug with unclosed incidents.
-                 */
-                IncidentsDB::closeAnyActiveIncidentsForSite($incident->getSiteID());
 
                 break;
         }

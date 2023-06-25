@@ -219,10 +219,16 @@ class IncidentsDB extends PackDB
         return $stmt->rowCount();
     }
 
-    public static function closeAnyActiveIncidentsForSite(int $siteID) {
+    public static function closeAnyActiveIncidentsForSite(int $siteID)
+    {
         $sql  = 'UPDATE incidents SET end_time = CURRENT_TIMESTAMP WHERE site_id = :site_id AND end_time IS NULL';
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute(['site_id' => $siteID]);
+
+        /**
+         * Because the site data field in the sites table is used only for the incidents info, we should also clear it.
+         */
+        SiteMonitoringDB::clearSiteData($siteID);
     }
 
     protected static function getLastIncidentID(): int
