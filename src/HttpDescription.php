@@ -144,9 +144,9 @@ class HttpDescription
     {
         switch ($lang) {
             case 'en_US':
-                return self::$codesDescriptionsEN[$code] ?? 'Unknown';
+                return self::$codesDescriptionsEN[$code] ?? 'Unknown code. Please, refer to https://en.wikipedia.org/wiki/List_of_HTTP_status_codes for more information.';
             case 'ru_RU':
-                return self::$codesDescriptionsRU[$code] ?? 'Неизвестно';
+                return self::$codesDescriptionsRU[$code] ?? 'Неизвестный код. Пожалуйста, обратитесь к https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP для получения дополнительной информации.';
             default:
                 return self::$codesDescriptionsEN[$code] ?? 'Unknown';
         }
