@@ -4,3 +4,4 @@ config.php
 /vendor
 /assets/cats
 *.cache
+.idea
