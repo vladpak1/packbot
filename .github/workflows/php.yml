@@ -18,7 +18,7 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: packbottest
         ports:
           - 3306:3306
@@ -48,7 +48,7 @@ jobs:
         while ! mysqladmin ping -h127.0.0.1 --silent; do
           sleep 1
         done
-        mysql -h127.0.0.1 -uroot --database=packbottest < structure.sql
+        mysql -h127.0.0.1 -uroot -ppassword --database=packbottest < structure.sql
 
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
