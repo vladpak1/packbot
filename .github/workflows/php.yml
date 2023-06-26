@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Tests (functional & unit)
 
 on:
   push:
@@ -10,9 +10,14 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
+  tests:
+    
+    name: PHP ${{ matrix.php }} Test
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        php: ['8.1']
     
     services:
       mysql:
