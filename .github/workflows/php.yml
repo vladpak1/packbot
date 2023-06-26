@@ -44,8 +44,12 @@ jobs:
       
     - name: Import DB Structure
       run: |
-        sudo systemctl start mysql
-        mysql -u root --database=packbottest < structure.sql
+        echo "Waiting for MySQL to start..."
+        while ! mysqladmin ping -h127.0.0.1 --silent; do
+          sleep 1
+        done
+        mysql -h127.0.0.1 -uroot --database=packbottest < structure.sql
+
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
