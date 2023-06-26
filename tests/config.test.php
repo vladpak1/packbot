@@ -22,9 +22,9 @@ return [
     /**
      * MySQL connection settings.
      */
-    'db_host'     => 'localhost',
+    'db_host'     => '127.0.0.1',
     'db_user'     => 'root',
-    'db_password' => '',
+    'db_password' => 'password',
     'db_name'     => 'packbottest',
     /**
      * Do we need to enable global limiter?
