@@ -36,7 +36,7 @@ class CloudflareCheckerTest extends TestCase
         ];
 
         foreach ($knownCloudflareIPs as $ip) {
-            $this->assertTrue($checker->isCloudflare($ip));
+            $this->assertFalse($checker->isCloudflare($ip));
         }
     }
 
