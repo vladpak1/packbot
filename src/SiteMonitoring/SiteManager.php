@@ -32,6 +32,7 @@ class SiteManager
         try {
             $effectiveUrl = Url::getEffectiveUrl($domain);
         } catch (CurlException $e) {
+            error_log(print_r($e, true));
             throw new SiteMonitoringException($this->text->sprintf('Не удалось выполнить запрос к сайту %s. Вы можете добавлять в мониторинг только существующие и работающие сайты.', $domain));
         }
 

@@ -30,11 +30,6 @@ class Site implements \JsonSerializable
         $this->time = new Time();
     }
 
-    public function __toString()
-    {
-        return $this->jsonSerialize();
-    }
-
     public function jsonSerialize(): array
     {
         return $this->data;
@@ -69,7 +64,7 @@ class Site implements \JsonSerializable
 
     public function getURL(): string
     {
-        return $this->data['url'];
+        return $this->punycodeToUnicode($this->data['url']);
     }
 
     public function getState(): string
@@ -171,5 +166,29 @@ class Site implements \JsonSerializable
         }
 
         return $sent;
+    }
+
+    function punycodeToUnicode(string $url): string
+    {
+        if (!function_exists('idn_to_utf8')) {
+            // intl не установлен — просто вернём исходный URL
+            return $url;
+        }
+
+        $parts = parse_url($url);
+
+        $out = '';
+        if (!empty($parts['scheme']))   $out .= $parts['scheme'] . ':';
+        if (!empty($parts['host']))     $out .= '//';
+        if (!empty($parts['user']))     $out .= $parts['user'];
+        if (!empty($parts['pass']))     $out .= ':' . $parts['pass'];
+        if (!empty($parts['user']))     $out .= '@';
+        if (!empty($parts['host']))     $out .= idn_to_utf8($parts['host']);
+        if (!empty($parts['port']))     $out .= ':' . $parts['port'];
+        if (!empty($parts['path']))     $out .= $parts['path'];
+        if (!empty($parts['query']))    $out .= '?' . $parts['query'];
+        if (!empty($parts['fragment'])) $out .= '#' . $parts['fragment'];
+
+        return $out;
     }
 }

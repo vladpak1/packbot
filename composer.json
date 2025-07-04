@@ -24,7 +24,15 @@
         "intervention/mimesniffer": "^0.4.2",
         "spatie/dns": "^2.5",
         "chillerlan/php-qrcode": "dev-main#c8c37a4e36300f1fc4a7fb44ee22186eac1e60a4",
-        "intervention/image": "^2.7"
+        "intervention/image": "^2.7",
+        "illuminate/queue": "^10.0",
+        "illuminate/events": "^10.0",
+        "illuminate/container": "^10.0",
+        "illuminate/support": "^10.0",
+        "predis/predis": "^2.2",
+        "illuminate/bus": "^10.48",
+        "illuminate/cache": "^10.48",
+        "illuminate/filesystem": "^10.48"
     },
     "autoload": {
         "classmap": [

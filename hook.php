@@ -81,6 +81,35 @@ try {
     PackDB::connect();
 
     // Handle telegram webhook request
+
+    $isWhitelist = Environment::var('whitelistEnabled');
+
+    /**
+     * If whitelist is enabled, we will handle only admins requests.
+     */
+    if ($isWhitelist) {
+        $rawInput    = file_get_contents('php://input');
+        $updateArray = json_decode($rawInput, true);
+        $update      = new \Longman\TelegramBot\Entities\Update($updateArray, $bot_username);
+        $message     = Environment::var('whitelistMessage');
+
+        if ($update->getCallbackQuery()) {
+            $userID = $update->getCallbackQuery()->getFrom()->getId();
+        } elseif ($update->getMessage()) {
+            $userID = $update->getMessage()->getFrom()->getId();
+        } else {
+            error_log('die');
+            die;
+        }
+
+        if (!in_array($userID, Environment::var('admins'))) {
+            return \Longman\TelegramBot\Request::sendMessage([
+                'chat_id' => $userID,
+                'text'    => $message,
+            ]);
+        }
+    }
+
     $telegram->handle();
 } catch (TelegramException $e) {
     // Silence is golden!

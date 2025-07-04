@@ -6,7 +6,7 @@ use Throwable;
 
 class SiteChecker
 {
-    protected array $sites;
+    protected Site $site;
 
     protected array $settings;
 
@@ -15,30 +15,15 @@ class SiteChecker
     /**
      * This class is responsible for checking the sites.
      */
-    public function __construct()
+    public function __construct(Site $site)
     {
-        $this->getSites();
         $this->getSettings();
+        $this->site = $site;
     }
 
-    /**
-     * Check all sites.
-     */
-    public function checkSites()
+    public function process(): void
     {
-
-        /**
-         * Check if check sites is temporarily disabled.
-         */
-        if ($this->settings['disabled']) {
-            echo 'Site checking is disabled.' . PHP_EOL;
-
-            return;
-        }
-
-        foreach ($this->sites as $site) {
-            $this->checkSite($site);
-        }
+        $this->checkSite($this->site);
     }
 
     /**
@@ -53,19 +38,6 @@ class SiteChecker
     protected function getSettings()
     {
         $this->settings = Environment::var('monitoring_settings')['siteChecker'];
-    }
-
-    protected function getSites()
-    {
-        $sites = SiteMonitoringDB::getSitesIDs();
-
-        $objects = [];
-
-        foreach ($sites as $id) {
-            $objects[] = new Site($id);
-        }
-
-        $this->sites = $objects;
     }
 
     protected function checkSite(Site $site, $recheck = true, $forceDisableNoCache = false)

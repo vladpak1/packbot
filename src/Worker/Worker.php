@@ -14,26 +14,17 @@ class Worker
         $this->initEnv();
     }
 
-    public function doJob()
+    public function queueJobs(): void
     {
-        $siteChecker = new SiteChecker();
+        $sites = SiteMonitoringDB::getSitesIDs();
+        shuffle($sites);
 
-        $siteChecker->checkSites();
+        $pusher = new QueuePusher();
 
-        $alerts = $siteChecker->getAlerts();
-
-        echo 'Alerts: ' . count($alerts) . PHP_EOL;
-        echo 'Alerts::: ' . PHP_EOL;
-        print_r($alerts);
-
-        foreach ($alerts as $alert) {
-            /**
-             * @var Alert $alert
-             */
-            sleep(2);
-            echo 'Send alert: ' . $alert->getSite()->getURL() . PHP_EOL;
-            $alert->send();
+        foreach ($sites as $siteID) {
+            $pusher->pushCheck($siteID);
         }
+
     }
 
     public function doDailyJob()
@@ -47,6 +38,8 @@ class Worker
      */
     protected function initEnv()
     {
+        require_once __DIR__ . '/../../queue.php';
+
         try {
             $bot_api_key  = Environment::var('bot_api_key');
             $bot_username = Environment::var('bot_username');

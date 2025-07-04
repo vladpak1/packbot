@@ -71,6 +71,13 @@ class Curl
      */
     public function __construct(string $url)
     {
+        if (str_contains($url, '.рф')) {
+            // Convert to punnycode if the URL contains .рф
+            $url = idn_to_ascii($url, IDNA_NONTRANSITIONAL_TO_ASCII | IDNA_ALLOW_UNASSIGNED);
+        }
+
+
+
         $this->url = $url;
     }
 

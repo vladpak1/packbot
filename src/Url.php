@@ -16,6 +16,10 @@ class Url
             return false;
         }
 
+        if (str_contains($url, '.рф')) {
+            return true;
+        }
+
         return false !== filter_var($url, FILTER_VALIDATE_URL);
     }
 

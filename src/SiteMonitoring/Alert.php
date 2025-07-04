@@ -181,11 +181,16 @@ class Alert
         UserSettings::setUserID($userID);
         $this->text = new Text();
 
-        match($this->getAlertType()) {
-            'firstAlert'   => $this->sendFirstAlert($userID),
-            'anotherAlert' => $this->sendAnotherAlert($userID),
-            'workingAgain' => $this->sendWorkingAgainAlert($userID),
-        };
+        try {
+            match($this->getAlertType()) {
+                'firstAlert'   => $this->sendFirstAlert($userID),
+                'anotherAlert' => $this->sendAnotherAlert($userID),
+                'workingAgain' => $this->sendWorkingAgainAlert($userID),
+            };
+        } catch (\Throwable $e) {
+            error_log(sprintf('Error occurred while sending alert to user %d: %s', $userID, $e->getMessage()));
+            echo 'Error occurred while sending alert to user ' . $userID . ': ' . $e->getMessage() . PHP_EOL;
+        }
     }
 
     protected function sendFirstAlert(int $userID)
@@ -261,7 +266,6 @@ class Alert
             'reply_markup'             => $this->getAlertKeyboard(),
             'disable_web_page_preview' => true,
         ];
-
         $response = Request::sendMessage($data);
 
         echo PHP_EOL;
