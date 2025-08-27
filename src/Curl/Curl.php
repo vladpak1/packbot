@@ -71,14 +71,50 @@ class Curl
      */
     public function __construct(string $url)
     {
-        if (str_contains($url, '.рф')) {
-            // Convert to punnycode if the URL contains .рф
-            $url = idn_to_ascii($url, IDNA_NONTRANSITIONAL_TO_ASCII | IDNA_ALLOW_UNASSIGNED);
+        $this->url = $this->normalizeIdnUrl($url);
+    }
+
+    private function normalizeIdnUrl(string $url): string
+    {
+        if (!preg_match('~^[a-z][a-z0-9+.-]*://~i', $url)) {
+            $url = 'http://' . $url;
         }
 
+        $p = parse_url($url);
+        if ($p === false || !isset($p['host'])) {
+            throw new CurlException('Invalid URL: ' . $url);
+        }
 
+        if (preg_match('/[^\x00-\x7F]/', $p['host'])) {
+            $ascii = idn_to_ascii(
+                $p['host'],
+                IDNA_NONTRANSITIONAL_TO_ASCII | IDNA_ALLOW_UNASSIGNED,
+                INTL_IDNA_VARIANT_UTS46
+            );
+            if ($ascii === false) {
+                throw new CurlException('IDN conversion failed for host: ' . $p['host']);
+            }
+            $p['host'] = $ascii;
+        }
 
-        $this->url = $url;
+        if (!empty($p['path'])) {
+            $p['path'] = implode('/', array_map(function ($seg) {
+                return preg_match('/%[0-9A-Fa-f]{2}/', $seg) ? $seg : rawurlencode($seg);
+            }, explode('/', $p['path'])));
+        }
+
+        if (!empty($p['query'])) {
+            parse_str($p['query'], $q);
+            $p['query'] = http_build_query($q, '', '&', PHP_QUERY_RFC3986);
+        }
+
+        return (isset($p['scheme']) ? "{$p['scheme']}://" : '')
+            . (isset($p['user']) ? $p['user'] . (isset($p['pass']) ? ':' . $p['pass'] : '') . '@' : '')
+            . $p['host']
+            . (isset($p['port']) ? ':' . $p['port'] : '')
+            . ($p['path'] ?? '')
+            . (isset($p['query']) ? '?' . $p['query'] : '')
+            . (isset($p['fragment']) ? '#' . $p['fragment'] : '');
     }
 
     /**
