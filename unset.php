@@ -5,7 +5,6 @@ use PackBot\Environment;
 // Load composer
 require __DIR__ . '/vendor/autoload.php';
 
-
 try {
     $bot_api_key  = Environment::var('bot_api_key');
     $bot_username = Environment::var('bot_username');
