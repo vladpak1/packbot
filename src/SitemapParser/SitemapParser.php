@@ -190,7 +190,7 @@ class SitemapParser
             'parse_mode' => 'HTML',
         ]);
 
-        sleep(2);
+        sleep(0);
     }
 
     protected function getSitemapContent(string $sitemap)
