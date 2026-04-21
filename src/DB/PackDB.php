@@ -95,4 +95,35 @@ class PackDB
 
         return $result['total_messages'] ?? 0;
     }
+
+    /**
+     * Getting all users ids from table 'user' (row 'id') and return it as an array.
+     */
+    public static function getUsersIDs(): array
+    {
+        $stmt = self::$pdo->query('SELECT id FROM user');
+        $ids  = [];
+
+        while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            $ids[] = $row[0];
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Getting all new users for today. New users are users who registered today.
+     * This information contains in 'user' table, row 'created_at' in format 'timestamp'.
+     */
+    public static function getNewUsersIDs(): array
+    {
+        $stmt = self::$pdo->query('SELECT id FROM user WHERE DATE(created_at) = CURDATE()');
+        $ids  = [];
+
+        while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            $ids[] = $row[0];
+        }
+
+        return $ids;
+    }
 }
