@@ -31,7 +31,7 @@ class Curl
         'CURLOPT_USERAGENT'      => 'PackBot/2.0 (+https://t.me/packhelperbot)',
         'CURLOPT_SSL_VERIFYPEER' => 0,
         'CURLOPT_SSL_VERIFYHOST' => 0,
-        'CURLOPT_CONNECTTIMEOUT' => 5,
+        'CURLOPT_CONNECTTIMEOUT' => 10,
         'CURLOPT_TIMEOUT'        => 5,
         'CURLOPT_MAXREDIRS'      => 3,
         'CURLOPT_FOLLOWLOCATION' => 1,

@@ -11,7 +11,7 @@ class CheckSiteJob implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public int $timeout = 60;
+    public int $timeout = 480;
 
     public int $tries = 1;
 
