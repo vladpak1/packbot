@@ -47,7 +47,6 @@ class AdminStatistics extends Entity
         $this->statistics['siteMonitoring'] = [
             'totalSites'  => SiteMonitoringDB::getTotalSites(),
             'outageSites' => SiteMonitoringDB::getTotalSitesWithProblems(),
-            'siteOwners'  => SiteMonitoringDB::getTotalUsersAssignedToSites(),
             'lastCheck'   => $time->relative_time_string(SiteMonitoringDB::getLastCheckedSiteTimestamp()),
         ];
     }
